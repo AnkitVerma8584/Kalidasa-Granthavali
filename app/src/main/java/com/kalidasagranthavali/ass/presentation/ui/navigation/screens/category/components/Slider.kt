@@ -3,7 +3,6 @@ package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.
 import android.widget.ImageView
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -25,19 +24,21 @@ import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun LazyItemScope.Slider(
+fun Slider(
     banner: List<String>
 ) {
     val pagerState = rememberPagerState(pageCount = banner.size, initialPage = 0)
-
     LaunchedEffect(Unit) {
         while (true) {
             yield()
             delay(5000)
-            pagerState.animateScrollToPage(
-                page = (pagerState.currentPage + 1) % pagerState.pageCount,
-                animationSpec = tween(500)
-            )
+            try {
+                pagerState.animateScrollToPage(
+                    page = (pagerState.currentPage + 1) % pagerState.pageCount,
+                    animationSpec = tween(500)
+                )
+            } catch (e: Exception) {
+            }
         }
     }
 

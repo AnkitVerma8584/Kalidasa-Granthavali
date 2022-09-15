@@ -1,18 +1,18 @@
 package com.kalidasagranthavali.ass.data.remote.repository
 
-import com.kalidasagranthavali.ass.data.remote.dao.FilesDao
-import com.kalidasagranthavali.ass.domain.modals.Files
-import com.kalidasagranthavali.ass.domain.repository.FilesRepository
+import com.kalidasagranthavali.ass.data.remote.apis.FilesApi
+import com.kalidasagranthavali.ass.domain.modals.HomeFiles
+import com.kalidasagranthavali.ass.domain.repository.remote.FilesRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
 import retrofit2.HttpException
 import java.io.IOException
 
-class FilesRepositoryImpl(private val filesDao: FilesDao) : FilesRepository {
+class FilesRemoteRepositoryImpl(private val filesApi: FilesApi) : FilesRemoteRepository {
 
-    override suspend fun getFiles(subCategoryId: Int): Resource<List<Files>> {
+    override suspend fun getFiles(catId: Int, subCategoryId: Int): Resource<List<HomeFiles>> {
         return try {
-            val result = filesDao.getFiles(subCategoryId)
+            val result = filesApi.getFiles(catId, subCategoryId)
             if (result.isSuccessful && result.body() != null) {
                 Resource.Success(result.body()?.data ?: emptyList())
             } else {

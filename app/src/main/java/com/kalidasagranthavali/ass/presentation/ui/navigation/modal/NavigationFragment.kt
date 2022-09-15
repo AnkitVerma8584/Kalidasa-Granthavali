@@ -6,7 +6,7 @@ import com.kalidasagranthavali.ass.R
 
 sealed class NavigationFragment(
     val route: String,
-    val title: String,
+    var title: String,
     @DrawableRes val icon: Int? = null
 ) {
     object Home : NavigationFragment(
@@ -30,7 +30,11 @@ sealed class NavigationFragment(
     )
 
     object Files : NavigationFragment(
-        route = "files/{sub_cat_id}", title = "Files"
+        route = "files/{cat_id}/{sub_cat_id}", title = "Files"
+    )
+
+    object FileDetails : NavigationFragment(
+        route = "file_details/{file_id}", title = "File Details"
     )
 
 }

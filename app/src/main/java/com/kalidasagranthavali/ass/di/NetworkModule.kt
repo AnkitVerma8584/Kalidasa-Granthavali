@@ -1,9 +1,9 @@
 package com.kalidasagranthavali.ass.di
 
 import com.kalidasagranthavali.ass.data.remote.Api
-import com.kalidasagranthavali.ass.data.remote.dao.CategoryDao
-import com.kalidasagranthavali.ass.data.remote.dao.FilesDao
-import com.kalidasagranthavali.ass.data.remote.dao.SubCategoryDao
+import com.kalidasagranthavali.ass.data.remote.apis.FilesApi
+import com.kalidasagranthavali.ass.data.remote.apis.HomeApi
+import com.kalidasagranthavali.ass.data.remote.apis.SubCategoryApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,18 +27,18 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCategoryDao(@KalidasaRetrofitBuild retrofit: Retrofit): CategoryDao =
-        retrofit.create(CategoryDao::class.java)
+    fun provideHomeDao(@KalidasaRetrofitBuild retrofit: Retrofit): HomeApi =
+        retrofit.create(HomeApi::class.java)
 
     @Provides
     @Singleton
-    fun provideSubCategoryDao(@KalidasaRetrofitBuild retrofit: Retrofit): SubCategoryDao =
-        retrofit.create(SubCategoryDao::class.java)
+    fun provideSubCategoryDao(@KalidasaRetrofitBuild retrofit: Retrofit): SubCategoryApi =
+        retrofit.create(SubCategoryApi::class.java)
 
     @Provides
     @Singleton
-    fun provideFilesDao(@KalidasaRetrofitBuild retrofit: Retrofit): FilesDao =
-        retrofit.create(FilesDao::class.java)
+    fun provideFilesDao(@KalidasaRetrofitBuild retrofit: Retrofit): FilesApi =
+        retrofit.create(FilesApi::class.java)
 }
 
 @Qualifier

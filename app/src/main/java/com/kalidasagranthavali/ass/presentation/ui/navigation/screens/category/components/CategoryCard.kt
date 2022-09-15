@@ -11,22 +11,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.kalidasagranthavali.ass.domain.modals.Category
+import com.kalidasagranthavali.ass.domain.modals.HomeCategory
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyItemScope.CategoryItem(
-    data: Category,
-    onClick: (Int) -> Unit
+    data: HomeCategory,
+    onClick: (HomeCategory) -> Unit
 ) {
     ElevatedCard(modifier = Modifier
         .padding(5.dp)
         .animateItemPlacement()
         .fillMaxWidth()
-        .clickable { onClick(data.id) }) {
+        .clickable { onClick(data) }) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
@@ -35,14 +36,15 @@ fun LazyItemScope.CategoryItem(
                 modifier = Modifier
                     .height(100.dp)
                     .width(100.dp),
+                contentScale = ContentScale.Crop,
                 painter = rememberAsyncImagePainter(model = data.image),
                 contentDescription = null
             )
             Text(
-                text = data.category,
+                text = data.name,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 8.dp),
+                    .padding(horizontal = 12.dp),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )

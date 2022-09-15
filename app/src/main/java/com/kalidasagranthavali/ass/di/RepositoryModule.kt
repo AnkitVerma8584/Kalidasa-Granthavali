@@ -1,17 +1,24 @@
 package com.kalidasagranthavali.ass.di
 
 import com.kalidasagranthavali.ass.data.local.dao.BannerDao
-import com.kalidasagranthavali.ass.data.local.repositoryImpl.BannerRepositoryImpl
-import com.kalidasagranthavali.ass.data.remote.dao.CategoryDao
-import com.kalidasagranthavali.ass.data.remote.dao.FilesDao
-import com.kalidasagranthavali.ass.data.remote.dao.SubCategoryDao
-import com.kalidasagranthavali.ass.data.remote.repository.CategoryRepositoryImpl
-import com.kalidasagranthavali.ass.data.remote.repository.FilesRepositoryImpl
-import com.kalidasagranthavali.ass.data.remote.repository.SubCategoryRepositoryImpl
-import com.kalidasagranthavali.ass.domain.repository.BannerRepository
-import com.kalidasagranthavali.ass.domain.repository.CategoryRepository
-import com.kalidasagranthavali.ass.domain.repository.FilesRepository
-import com.kalidasagranthavali.ass.domain.repository.SubCategoryRepository
+import com.kalidasagranthavali.ass.data.local.dao.CategoryDao
+import com.kalidasagranthavali.ass.data.local.dao.FilesDao
+import com.kalidasagranthavali.ass.data.local.dao.SubCategoryDao
+import com.kalidasagranthavali.ass.data.local.repositoryImpl.FilesLocalRepositoryImpl
+import com.kalidasagranthavali.ass.data.local.repositoryImpl.HomeLocalRepositoryImpl
+import com.kalidasagranthavali.ass.data.local.repositoryImpl.SubCategoryLocalRepositoryImpl
+import com.kalidasagranthavali.ass.data.remote.apis.FilesApi
+import com.kalidasagranthavali.ass.data.remote.apis.HomeApi
+import com.kalidasagranthavali.ass.data.remote.apis.SubCategoryApi
+import com.kalidasagranthavali.ass.data.remote.repository.FilesRemoteRepositoryImpl
+import com.kalidasagranthavali.ass.data.remote.repository.HomeRemoteRepositoryImpl
+import com.kalidasagranthavali.ass.data.remote.repository.SubCategoryRemoteRepositoryImpl
+import com.kalidasagranthavali.ass.domain.repository.local.FileLocalRepository
+import com.kalidasagranthavali.ass.domain.repository.local.HomeLocalRepository
+import com.kalidasagranthavali.ass.domain.repository.local.SubCategoryLocalRepository
+import com.kalidasagranthavali.ass.domain.repository.remote.FilesRemoteRepository
+import com.kalidasagranthavali.ass.domain.repository.remote.HomeRemoteRepository
+import com.kalidasagranthavali.ass.domain.repository.remote.SubCategoryRemoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,21 +31,41 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideCategoryRepository(categoryDao: CategoryDao): CategoryRepository =
-        CategoryRepositoryImpl(categoryDao)
+    fun provideHomeRemoteRepository(homeApi: HomeApi): HomeRemoteRepository =
+        HomeRemoteRepositoryImpl(homeApi)
 
     @Provides
     @ViewModelScoped
-    fun provideSubCategoryRepository(subCategoryDao: SubCategoryDao): SubCategoryRepository =
-        SubCategoryRepositoryImpl(subCategoryDao)
+    fun provideSubCategoryRepository(subCategoryApi: SubCategoryApi): SubCategoryRemoteRepository =
+        SubCategoryRemoteRepositoryImpl(subCategoryApi)
 
     @Provides
     @ViewModelScoped
-    fun provideFilesRepository(filesDao: FilesDao): FilesRepository =
-        FilesRepositoryImpl(filesDao)
+    fun provideFilesRepository(filesApi: FilesApi): FilesRemoteRepository =
+        FilesRemoteRepositoryImpl(filesApi)
 
     @Provides
     @ViewModelScoped
-    fun provideBannerRepository(bannerDao: BannerDao): BannerRepository =
-        BannerRepositoryImpl(bannerDao)
+    fun provideHomeLocalRepository(
+        bannerDao: BannerDao,
+        categoryDao: CategoryDao
+    ): HomeLocalRepository =
+        HomeLocalRepositoryImpl(bannerDao, categoryDao)
+
+
+    @Provides
+    @ViewModelScoped
+    fun provideSubCategoryLocalRepository(
+        subCategoryDao: SubCategoryDao
+    ): SubCategoryLocalRepository =
+        SubCategoryLocalRepositoryImpl(subCategoryDao)
+
+
+    @Provides
+    @ViewModelScoped
+    fun provideFilesLocalRepository(
+        filesDao: FilesDao
+    ): FileLocalRepository =
+        FilesLocalRepositoryImpl(filesDao)
+
 }

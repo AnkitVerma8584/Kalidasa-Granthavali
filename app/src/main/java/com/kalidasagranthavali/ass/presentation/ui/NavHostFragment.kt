@@ -15,7 +15,8 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.modal.NavigationFr
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.about.AboutPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.CategoryPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.contact.ContactPage
-import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.file_list.FilePage
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.FileDetailsPage
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.FilePage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_category.SubCategoryPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.support.SupportPage
 
@@ -33,7 +34,8 @@ fun NavHostFragments(
     ) {
         composable(route = NavigationFragment.Home.route) {
             CategoryPage {
-                navController.navigate("sub_category/$it") {
+                NavigationFragment.SubCategory.title = it.name
+                navController.navigate("sub_category/${it.id}") {
                     popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true
                     }
@@ -55,15 +57,34 @@ fun NavHostFragments(
             route = NavigationFragment.SubCategory.route,
             arguments = listOf(navArgument("cat_id") { type = NavType.IntType })
         ) {
-            SubCategoryPage {
-                navController.navigate("files/$it") {
+            SubCategoryPage(onNavigateToFile = {
+                NavigationFragment.Files.title = it.name
+                navController.navigate("files/${it.cat_id}/${it.id}") {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            })
+        }
+        composable(
+            route = NavigationFragment.Files.route,
+            arguments = listOf(
+                navArgument("cat_id") { type = NavType.IntType },
+                navArgument("sub_cat_id") { type = NavType.IntType })
+        ) {
+            FilePage {
+                NavigationFragment.FileDetails.title = it.name
+                navController.navigate("file_details/${it.id}") {
                     launchSingleTop = true
                     restoreState = true
                 }
             }
         }
-        composable(route = NavigationFragment.Files.route) {
-            FilePage()
+        composable(
+            route = NavigationFragment.FileDetails.route,
+            arguments = listOf(
+                navArgument("file_id") { type = NavType.IntType }
+            )) {
+            FileDetailsPage()
         }
     }
 }

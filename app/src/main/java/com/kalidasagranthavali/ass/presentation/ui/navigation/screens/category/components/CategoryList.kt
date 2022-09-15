@@ -11,15 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kalidasagranthavali.ass.domain.modals.Category
+import com.kalidasagranthavali.ass.domain.modals.HomeCategory
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryList(
-    data: List<Category> = emptyList(),
+    data: List<HomeCategory> = emptyList(),
     banner: List<String>,
-    onClick: (Int) -> Unit
+    onClick: (HomeCategory) -> Unit
 ) {
     LazyColumn {
         if (banner.isNotEmpty())

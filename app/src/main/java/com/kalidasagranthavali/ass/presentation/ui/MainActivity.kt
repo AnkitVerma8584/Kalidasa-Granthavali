@@ -1,25 +1,23 @@
 package com.kalidasagranthavali.ass.presentation.ui
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,15 +61,17 @@ private fun MainPage() {
         NavigationFragment.SubCategory,
         NavigationFragment.Files
     )
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navController: NavHostController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
+    val currentFragment by derivedStateOf {
+        screens.find { it.route == navController.currentBackStackEntry?.destination?.route }
+    }
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = currentFragment?.icon != null,
         drawerContent = {
             ModalDrawerSheet {
                 Spacer(Modifier.height(24.dp))
@@ -98,10 +98,6 @@ private fun MainPage() {
                 }
             }
         }) {
-
-        val currentFragment by derivedStateOf {
-            screens.find { it.route == navController.currentBackStackEntry?.destination?.route }
-        }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -177,20 +173,85 @@ private fun AppBar(
                     imageVector = Icons.Filled.Menu,
                     contentDescription = null,
                     modifier = Modifier
+                        .clickable { hamburgerIconClicked() }
                         .padding(8.dp)
-                        .clickable {
-                            hamburgerIconClicked()
-                        })
+                )
             } else {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = null,
                     modifier = Modifier
+                        .clickable { navigationBackClicked() }
                         .padding(8.dp)
-                        .clickable {
-                            navigationBackClicked()
-                        })
+                )
             }
+        },
+        actions = {
+            TopAppBarDropdownMenu()
         }
     )
 }
+
+@Composable
+private fun TopAppBarDropdownMenu(
+    context: Context = LocalContext.current
+) {
+    val expanded = remember { mutableStateOf(false) }
+    Box(
+        Modifier
+            .wrapContentSize(Alignment.TopEnd)
+    ) {
+        IconButton(onClick = {
+            expanded.value = true
+        }) {
+            Icon(
+                painterResource(id = R.drawable.ic_language),
+                contentDescription = "Change Language"
+            )
+        }
+    }
+    DropdownMenu(
+        expanded = expanded.value,
+        onDismissRequest = { expanded.value = false },
+    ) {
+        MenuItem("English") {
+            context.showToast("Language changed to english")
+            expanded.value = false
+        }
+        MenuItem("Hindi") {
+            context.showToast("Language changed to hindi")
+            expanded.value = false
+        }
+        MenuItem("Kannada") {
+            context.showToast("Language changed to kannada")
+            expanded.value = false
+        }
+        MenuItem("Sanskrit") {
+            context.showToast("Language changed to sanskrit")
+            expanded.value = false
+        }
+    }
+}
+
+
+@Composable
+private fun MenuItem(
+    text: String,
+    onMenuClick: () -> Unit
+) {
+    DropdownMenuItem(text = {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }, onClick = {
+        onMenuClick()
+    })
+}
+
+
+private fun Context.showToast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+

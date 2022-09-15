@@ -1,7 +1,7 @@
 package com.kalidasagranthavali.ass.domain.modals
 
-data class Category(
+data class HomeCategory(
     val id: Int,
-    val category: String,
+    val name: String,
     val image: String
 )

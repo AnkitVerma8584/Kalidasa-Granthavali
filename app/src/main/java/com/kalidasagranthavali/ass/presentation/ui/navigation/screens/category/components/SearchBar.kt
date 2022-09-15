@@ -13,13 +13,13 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
@@ -33,10 +33,9 @@ import androidx.compose.ui.unit.dp
 fun SearchBar(
     modifier: Modifier = Modifier,
     hint: String = "",
-    query: State<String>,
-    onClearPressed: (Unit) -> Unit = {},
-    onSearchQueryChanged: (String) -> Unit = {},
-    onSearchedPressed: (Unit) -> Unit = {}
+    query: String,
+    onClearPressed: () -> Unit = {},
+    onSearchQueryChanged: (String) -> Unit = {}
 ) {
     val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -44,7 +43,7 @@ fun SearchBar(
     val trailingIconView = @Composable {
         IconButton(
             onClick = {
-                onClearPressed(Unit)
+                onClearPressed()
             },
         ) {
             Icon(
@@ -53,10 +52,18 @@ fun SearchBar(
             )
         }
     }
+
+    val gradient = listOf(
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 1f),
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
+    )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer),
+            .background(Brush.verticalGradient(gradient)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
@@ -70,11 +77,11 @@ fun SearchBar(
             modifier = modifier
                 .fillMaxWidth(0.9f)
                 .focusRequester(focusRequester),
-            value = query.value,
+            value = query,
             placeholder = {
                 Text(hint, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
             },
-            trailingIcon = if (query.value.isNotBlank()) trailingIconView else null,
+            trailingIcon = if (query.isNotBlank()) trailingIconView else null,
             singleLine = true,
             onValueChange = {
                 onSearchQueryChanged(it)
@@ -94,10 +101,9 @@ fun SearchBar(
             keyboardActions = KeyboardActions(onSearch = {
                 keyboardController?.hide()
                 focusManager.clearFocus()
-                onSearchedPressed(Unit)
             })
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(22.dp))
     }
 
 }

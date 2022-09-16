@@ -71,13 +71,13 @@ fun NavHostFragments(
                 navArgument("cat_id") { type = NavType.IntType },
                 navArgument("sub_cat_id") { type = NavType.IntType })
         ) {
-            FilePage {
+            FilePage(onFileClicked = {
                 NavigationFragment.FileDetails.title = it.name
                 navController.navigate("file_details/${it.id}") {
                     launchSingleTop = true
                     restoreState = true
                 }
-            }
+            })
         }
         composable(
             route = NavigationFragment.FileDetails.route,

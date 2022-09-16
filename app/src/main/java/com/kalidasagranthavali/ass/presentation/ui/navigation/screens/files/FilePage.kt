@@ -28,7 +28,7 @@ fun FilePage(
                 viewModel.queryChanged(it)
             }
         )
-        FilesList(data = files, onFileClicked)
+        FilesList(data = files, onFileClicked =  onFileClicked)
     }
 
 }

@@ -59,7 +59,8 @@ private fun MainPage() {
         NavigationFragment.Contact,
         NavigationFragment.Support,
         NavigationFragment.SubCategory,
-        NavigationFragment.Files
+        NavigationFragment.Files,
+        NavigationFragment.FileDetails
     )
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()

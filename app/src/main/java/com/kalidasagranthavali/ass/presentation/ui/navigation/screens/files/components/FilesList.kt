@@ -23,7 +23,7 @@ fun FilesList(
         columns = GridCells.Adaptive(120.dp),
         content = {
             items(data, key = { it.id }) {
-                FileCard(item = it, textBackground = list, onFileClicked)
+                FileCard(item = it, textBackground = list, onFileClicked = onFileClicked)
             }
         })
 }

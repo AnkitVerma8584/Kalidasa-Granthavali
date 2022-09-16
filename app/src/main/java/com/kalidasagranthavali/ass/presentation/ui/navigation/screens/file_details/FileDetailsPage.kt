@@ -13,13 +13,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kalidasagranthavali.ass.R
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.SearchBar
 
 @Composable
 fun FileDetailsPage() {
-    val text = stringResource(id = R.string.about_us)
+    val text = stringResource(id = R.string.demo)
 
     var query by remember { mutableStateOf("") }
 
@@ -33,8 +34,9 @@ fun FileDetailsPage() {
         var start = 0
         val boldSpanStyle =
             SpanStyle(
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontWeight = FontWeight.SemiBold,
+                background = MaterialTheme.colorScheme.primaryContainer
             )
 
         Text(
@@ -42,17 +44,19 @@ fun FileDetailsPage() {
                 .verticalScroll(scrollState)
                 .padding(16.dp),
             color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium,
             text = buildAnnotatedString {
                 while (text.indexOf(query, start, ignoreCase = true) != -1 && query.isNotBlank()) {
-                    val firstIndex = text.indexOf(query, start, ignoreCase = true)
-                    val end = start + query.length
+                    val firstIndex = text.indexOf(query, start, true)
+                    val end = firstIndex + query.length
                     append(text.substring(start, firstIndex))
-                    pushStyle(boldSpanStyle)
-                    append(text.substring(start, end))
-                    pop()
+                    withStyle(style = boldSpanStyle) {
+                        append(text.substring(firstIndex, end))
+                    }
                     start = end
                 }
                 append(text.substring(start, text.length))
+                toAnnotatedString()
             })
     }
 

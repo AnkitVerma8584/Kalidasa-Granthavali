@@ -28,11 +28,11 @@ fun LazyGridItemScope.FileCard(
 ) {
     ElevatedCard(
         modifier = Modifier
-            .clickable { onFileClicked.invoke(item) }
             .padding(8.dp)
             .animateItemPlacement()
             .fillMaxWidth()
             .aspectRatio(2 / 3f)
+            .clickable { onFileClicked(item) }
     ) {
         Box(
             modifier = Modifier

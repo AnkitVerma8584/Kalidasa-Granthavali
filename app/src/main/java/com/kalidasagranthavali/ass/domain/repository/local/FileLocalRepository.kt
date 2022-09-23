@@ -7,5 +7,7 @@ interface FileLocalRepository {
 
     fun getFiles(query: String, cat_id: Int, sub_cat_id: Int): Flow<List<HomeFiles>>
 
+    suspend fun getFileById(fileId: Int): HomeFiles
+
     suspend fun submitFiles(files: List<HomeFiles>)
 }

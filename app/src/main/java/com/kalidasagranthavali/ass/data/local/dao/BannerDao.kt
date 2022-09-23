@@ -2,7 +2,6 @@ package com.kalidasagranthavali.ass.data.local.dao
 
 import androidx.room.*
 import com.kalidasagranthavali.ass.data.local.modals.Banner
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class BannerDao {
@@ -11,13 +10,13 @@ abstract class BannerDao {
     protected abstract suspend fun insert(banners: List<Banner>)
 
     @Query("SELECT COUNT(*) FROM banner;")
-    abstract fun getBannerCount(): Flow<Int>
+    abstract fun getBannerCount(): Int
 
     @Query("DELETE FROM banner;")
     protected abstract suspend fun delete()
 
     @Query("SELECT * FROM banner;")
-    abstract fun getBanners(): Flow<List<Banner>>
+    abstract suspend fun getBanners(): List<Banner>
 
     @Transaction
     open suspend fun insertBanners(banners: List<Banner>) {

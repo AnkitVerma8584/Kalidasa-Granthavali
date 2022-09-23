@@ -9,5 +9,6 @@ data class Files(
     val cat_id: Int,
     val sub_cat_id: Int,
     val name: String,
-    val image: String
+    val image: String,
+    val fileUrl: String
 )

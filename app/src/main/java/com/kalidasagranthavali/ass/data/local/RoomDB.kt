@@ -14,7 +14,7 @@ import com.kalidasagranthavali.ass.data.local.modals.SubCategory
 @Database(
     entities = [Banner::class, Category::class, SubCategory::class, Files::class],
     exportSchema = false,
-    version = 1
+    version = 2
 )
 abstract class RoomDB : RoomDatabase() {
     abstract fun getBannerDao(): BannerDao

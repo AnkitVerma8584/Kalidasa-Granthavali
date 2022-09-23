@@ -1,64 +1,71 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details
 
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import com.kalidasagranthavali.ass.R
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.SearchBar
 
 @Composable
-fun FileDetailsPage() {
-    val text = stringResource(id = R.string.demo)
-
-    var query by remember { mutableStateOf("") }
-
+fun FileDetailsPage(
+    viewModel: FileDetailsViewModel = hiltViewModel()
+) {
+    val text by viewModel.getData().collectAsState()
+    val query by viewModel.fileDataQuery.collectAsState()
     val scrollState = rememberScrollState()
 
+    var scale by remember { mutableStateOf(16f) }
     Column(modifier = Modifier.fillMaxSize()) {
         SearchBar(query = query, onSearchQueryChanged = {
-            query = it
-        })
+            viewModel.updateQuery(it)
+        }, onClearPressed = { viewModel.updateQuery() }, hint = "Search for any text..."
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, _, zoom, _ ->
+                        if ((scale * zoom) in 11.0f..60.0f) scale *= zoom
+                    }
+                }, contentAlignment = Alignment.Center
+        ) {
+            Details(text = text, scrollState = scrollState, scale = scale)
+        }
+    }
+}
 
-        var start = 0
-        val boldSpanStyle =
-            SpanStyle(
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.SemiBold,
-                background = MaterialTheme.colorScheme.primaryContainer
-            )
-
+@Composable
+private fun Details(
+    text: AnnotatedString?,
+    scrollState: ScrollState,
+    scale: Float
+) {
+    if (text == null || text.text.isBlank())
+        CircularProgressIndicator()
+    else
         Text(
             modifier = Modifier
                 .verticalScroll(scrollState)
                 .padding(16.dp),
-            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyMedium,
-            text = buildAnnotatedString {
-                while (text.indexOf(query, start, ignoreCase = true) != -1 && query.isNotBlank()) {
-                    val firstIndex = text.indexOf(query, start, true)
-                    val end = firstIndex + query.length
-                    append(text.substring(start, firstIndex))
-                    withStyle(style = boldSpanStyle) {
-                        append(text.substring(firstIndex, end))
-                    }
-                    start = end
-                }
-                append(text.substring(start, text.length))
-                toAnnotatedString()
-            })
-    }
-
-
+            color = MaterialTheme.colorScheme.onBackground,
+            text = text,
+            fontSize = scale.sp,
+            lineHeight = scale.sp * 1.2
+        )
 }

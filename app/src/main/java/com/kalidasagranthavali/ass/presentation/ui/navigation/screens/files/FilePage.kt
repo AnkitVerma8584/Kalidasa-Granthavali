@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.SearchBar
@@ -28,7 +29,6 @@ fun FilePage(
                 viewModel.queryChanged(it)
             }
         )
-        FilesList(data = files, onFileClicked =  onFileClicked)
+        FilesList(data = files, onFileClicked = onFileClicked)
     }
-
 }

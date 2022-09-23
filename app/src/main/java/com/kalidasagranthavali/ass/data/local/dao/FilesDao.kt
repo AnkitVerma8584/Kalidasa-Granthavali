@@ -16,6 +16,10 @@ abstract class FilesDao {
     @Query("SELECT * FROM files WHERE files.name LIKE :query AND cat_id=:cat_id AND sub_cat_id=:sub_cat_id;")
     abstract fun getFiles(query: String, cat_id: Int, sub_cat_id: Int): Flow<List<Files>>
 
+    @Query("SELECT * FROM files WHERE files.id=:id;")
+    abstract fun getFileById(id: Int): Files
+
+
     @Transaction
     open suspend fun insertFiles(files: List<Files>) {
         delete()

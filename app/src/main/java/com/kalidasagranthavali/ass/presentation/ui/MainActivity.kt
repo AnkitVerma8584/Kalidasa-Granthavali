@@ -2,9 +2,9 @@ package com.kalidasagranthavali.ass.presentation.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,12 +12,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kalidasagranthavali.ass.R
 import com.kalidasagranthavali.ass.presentation.theme.KalidasaGranthavaliTheme
 import com.kalidasagranthavali.ass.presentation.ui.navigation.modal.NavigationFragment
+import com.kalidasagranthavali.ass.util.locale.LocalHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -40,19 +41,27 @@ class MainActivity : ComponentActivity() {
         setContent {
             KalidasaGranthavaliTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    MainPage()
+                    MainPage {
+                        LocalHelper.setLocale(this@MainActivity, it)
+                        recreate()
+                    }
                 }
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(LocalHelper.onAttach(newBase!!))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainPage() {
+private fun MainPage(
+    onLanguageSelected: (tag: String) -> Unit
+) {
     val screens = listOf(
         NavigationFragment.Home,
         NavigationFragment.About,
@@ -70,8 +79,7 @@ private fun MainPage() {
     val currentFragment by derivedStateOf {
         screens.find { it.route == navController.currentBackStackEntry?.destination?.route }
     }
-    ModalNavigationDrawer(
-        drawerState = drawerState,
+    ModalNavigationDrawer(drawerState = drawerState,
         gesturesEnabled = currentFragment?.icon != null,
         drawerContent = {
             ModalDrawerSheet {
@@ -85,8 +93,7 @@ private fun MainPage() {
                 )
                 Spacer(Modifier.height(8.dp))
                 screens.filter { it.icon != null }.forEach { item ->
-                    MenuItem(
-                        item = item,
+                    MenuItem(item = item,
                         isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                         onMenuClick = {
                             scope.launch { drawerState.close() }
@@ -94,23 +101,23 @@ private fun MainPage() {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 launchSingleTop = true
                             }
-                        }
-                    )
+                        })
                 }
             }
         }) {
 
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                AppBar(
-                    title = currentFragment?.title ?: "",
-                    hamburgerIconClicked = { scope.launch { drawerState.open() } },
-                    navigationBackClicked = { navController.navigateUp() },
-                    isNavigationFragment = currentFragment?.icon != null
-                )
-            }) {
-            NavHostFragments(navController = navController, paddingValues = it)
+        val scaffoldState = rememberScaffoldState()
+        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+            AppBar(
+                title = currentFragment?.title?.asString()
+                    ?: stringResource(id = R.string.app_name),
+                hamburgerIconClicked = { scope.launch { drawerState.open() } },
+                navigationBackClicked = { navController.navigateUp() },
+                isNavigationFragment = currentFragment?.icon != null,
+                onLanguageSelected = onLanguageSelected
+            )
+        }) {
+            NavHostFragments(navController = navController, paddingValues = it, scaffoldState)
         }
     }
 }
@@ -118,32 +125,25 @@ private fun MainPage() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MenuItem(
-    item: NavigationFragment,
-    isSelected: Boolean,
-    onMenuClick: (item: NavigationFragment) -> Unit
+    item: NavigationFragment, isSelected: Boolean, onMenuClick: (item: NavigationFragment) -> Unit
 ) {
-    NavigationDrawerItem(
-        icon = {
-            item.icon?.let {
-                Image(
-                    painter = painterResource(id = it),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimaryContainer)
-                )
-            }
-        },
-        label = {
-            Text(
-                item.title,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                style = MaterialTheme.typography.labelLarge
+    NavigationDrawerItem(icon = {
+        item.icon?.let {
+            Image(
+                painter = painterResource(id = it),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimaryContainer)
             )
-        },
-        selected = isSelected,
-        onClick = {
-            onMenuClick(item)
-        },
-        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+        }
+    }, label = {
+        Text(
+            item.title.asString(),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            style = MaterialTheme.typography.labelLarge
+        )
+    }, selected = isSelected, onClick = {
+        onMenuClick(item)
+    }, modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
     )
 }
 
@@ -153,61 +153,51 @@ private fun AppBar(
     title: String,
     hamburgerIconClicked: () -> Unit,
     navigationBackClicked: () -> Unit,
-    isNavigationFragment: Boolean
+    isNavigationFragment: Boolean,
+    onLanguageSelected: (tag: String) -> Unit
 ) {
-    TopAppBar(
-        colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        },
-        navigationIcon = {
-            if (isNavigationFragment) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clickable { hamburgerIconClicked() }
-                        .padding(8.dp)
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clickable { navigationBackClicked() }
-                        .padding(8.dp)
-                )
-            }
-        },
-        actions = {
-            TopAppBarDropdownMenu()
+    TopAppBar(colors = TopAppBarDefaults.smallTopAppBarColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    ), title = {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }, navigationIcon = {
+        if (isNavigationFragment) {
+            Icon(imageVector = Icons.Filled.Menu,
+                contentDescription = null,
+                modifier = Modifier
+                    .clickable { hamburgerIconClicked() }
+                    .padding(8.dp))
+        } else {
+            Icon(imageVector = Icons.Default.ArrowBack,
+                contentDescription = null,
+                modifier = Modifier
+                    .clickable { navigationBackClicked() }
+                    .padding(8.dp))
         }
-    )
+    }, actions = {
+        TopAppBarDropdownMenu(onLanguageSelected)
+    })
 }
 
 @Composable
 private fun TopAppBarDropdownMenu(
-    context: Context = LocalContext.current
+    onLanguageSelected: (tag: String) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
     Box(
-        Modifier
-            .wrapContentSize(Alignment.TopEnd)
+        Modifier.wrapContentSize(Alignment.TopEnd)
     ) {
         IconButton(onClick = {
             expanded.value = true
         }) {
             Icon(
-                painterResource(id = R.drawable.ic_language),
-                contentDescription = "Change Language"
+                painterResource(id = R.drawable.ic_language), contentDescription = "Change Language"
             )
         }
     }
@@ -215,21 +205,17 @@ private fun TopAppBarDropdownMenu(
         expanded = expanded.value,
         onDismissRequest = { expanded.value = false },
     ) {
-        MenuItem("English") {
-            context.showToast("Language changed to english")
-            expanded.value = false
+        MenuItem(R.string.en) {
+            onLanguageSelected("en")
         }
-        MenuItem("Hindi") {
-            context.showToast("Language changed to hindi")
-            expanded.value = false
+        MenuItem(R.string.hi) {
+            onLanguageSelected("hi")
         }
-        MenuItem("Kannada") {
-            context.showToast("Language changed to kannada")
-            expanded.value = false
+        MenuItem(R.string.kn) {
+            onLanguageSelected("kn")
         }
-        MenuItem("Sanskrit") {
-            context.showToast("Language changed to sanskrit")
-            expanded.value = false
+        MenuItem(R.string.sa) {
+            onLanguageSelected("sa")
         }
     }
 }
@@ -237,12 +223,12 @@ private fun TopAppBarDropdownMenu(
 
 @Composable
 private fun MenuItem(
-    text: String,
+    @StringRes languageId: Int,
     onMenuClick: () -> Unit
 ) {
     DropdownMenuItem(text = {
         Text(
-            text = text,
+            text = stringResource(id = languageId),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
@@ -250,9 +236,3 @@ private fun MenuItem(
         onMenuClick()
     })
 }
-
-
-private fun Context.showToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-}
-

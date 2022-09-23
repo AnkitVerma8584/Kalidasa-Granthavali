@@ -1,5 +1,6 @@
 package com.kalidasagranthavali.ass.di
 
+import android.app.Application
 import com.kalidasagranthavali.ass.data.local.dao.BannerDao
 import com.kalidasagranthavali.ass.data.local.dao.CategoryDao
 import com.kalidasagranthavali.ass.data.local.dao.FilesDao
@@ -7,15 +8,18 @@ import com.kalidasagranthavali.ass.data.local.dao.SubCategoryDao
 import com.kalidasagranthavali.ass.data.local.repositoryImpl.FilesLocalRepositoryImpl
 import com.kalidasagranthavali.ass.data.local.repositoryImpl.HomeLocalRepositoryImpl
 import com.kalidasagranthavali.ass.data.local.repositoryImpl.SubCategoryLocalRepositoryImpl
+import com.kalidasagranthavali.ass.data.remote.apis.FileDataApi
 import com.kalidasagranthavali.ass.data.remote.apis.FilesApi
 import com.kalidasagranthavali.ass.data.remote.apis.HomeApi
 import com.kalidasagranthavali.ass.data.remote.apis.SubCategoryApi
+import com.kalidasagranthavali.ass.data.remote.repository.FileDataRemoteRepositoryImpl
 import com.kalidasagranthavali.ass.data.remote.repository.FilesRemoteRepositoryImpl
 import com.kalidasagranthavali.ass.data.remote.repository.HomeRemoteRepositoryImpl
 import com.kalidasagranthavali.ass.data.remote.repository.SubCategoryRemoteRepositoryImpl
 import com.kalidasagranthavali.ass.domain.repository.local.FileLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.local.HomeLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.local.SubCategoryLocalRepository
+import com.kalidasagranthavali.ass.domain.repository.remote.FileDataRemoteRepository
 import com.kalidasagranthavali.ass.domain.repository.remote.FilesRemoteRepository
 import com.kalidasagranthavali.ass.domain.repository.remote.HomeRemoteRepository
 import com.kalidasagranthavali.ass.domain.repository.remote.SubCategoryRemoteRepository
@@ -31,8 +35,11 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideHomeRemoteRepository(homeApi: HomeApi): HomeRemoteRepository =
-        HomeRemoteRepositoryImpl(homeApi)
+    fun provideHomeRemoteRepository(
+        homeApi: HomeApi,
+        homeLocalRepository: HomeLocalRepository
+    ): HomeRemoteRepository =
+        HomeRemoteRepositoryImpl(homeApi, homeLocalRepository)
 
     @Provides
     @ViewModelScoped
@@ -41,8 +48,16 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideFilesRepository(filesApi: FilesApi): FilesRemoteRepository =
+    fun provideFileRepository(filesApi: FilesApi): FilesRemoteRepository =
         FilesRemoteRepositoryImpl(filesApi)
+
+    @Provides
+    @ViewModelScoped
+    fun provideFileDataRepository(
+        filesApi: FileDataApi,
+        application: Application
+    ): FileDataRemoteRepository =
+        FileDataRemoteRepositoryImpl(filesApi, application)
 
     @Provides
     @ViewModelScoped
@@ -52,14 +67,12 @@ object RepositoryModule {
     ): HomeLocalRepository =
         HomeLocalRepositoryImpl(bannerDao, categoryDao)
 
-
     @Provides
     @ViewModelScoped
     fun provideSubCategoryLocalRepository(
         subCategoryDao: SubCategoryDao
     ): SubCategoryLocalRepository =
         SubCategoryLocalRepositoryImpl(subCategoryDao)
-
 
     @Provides
     @ViewModelScoped

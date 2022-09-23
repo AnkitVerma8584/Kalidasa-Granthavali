@@ -16,20 +16,14 @@ fun List<String>.mapToBannerList(): List<Banner> = this.map {
 }
 
 
-fun Flow<List<Banner>>.mapToStringList(): Flow<List<String>> = this.map {
-    it.map { b ->
-        b.image
-    }
-}
+fun List<Banner>.mapToStringList(): List<String> = this.map { it.image }
 
 fun List<HomeCategory>.mapToHomeList(): List<Category> = this.map {
     Category(it.id, it.name, it.image)
 }
 
-fun Flow<List<Category>>.mapToHomeCategoryList(): Flow<List<HomeCategory>> = this.map {
-    it.map { cat ->
-        HomeCategory(cat.id, cat.name, cat.image)
-    }
+fun List<Category>.mapToHomeCategoryList(): List<HomeCategory> = this.map { cat ->
+    HomeCategory(cat.id, cat.name, cat.image)
 }
 
 fun List<HomeSubCategory>.mapToSubCategoryList(): List<SubCategory> = this.map {
@@ -44,11 +38,13 @@ fun Flow<List<SubCategory>>.mapToHomeSubCategoryList(): Flow<List<HomeSubCategor
 
 
 fun List<HomeFiles>.mapToFilesList(): List<Files> = this.map {
-    Files(it.id, it.cat_id, it.sub_cat_id, it.name, it.image)
+    Files(it.id, it.cat_id, it.sub_cat_id, it.name, it.image, it.file_url)
 }
 
 fun Flow<List<Files>>.mapToHomeFilesList(): Flow<List<HomeFiles>> = this.map { cat ->
     cat.map {
-        HomeFiles(it.id, it.cat_id, it.sub_cat_id, it.name, it.image)
+        HomeFiles(it.id, it.cat_id, it.sub_cat_id, it.name, it.image, it.fileUrl)
     }
 }
+
+fun Files.mapToHomeFiles():HomeFiles = HomeFiles(id, cat_id, sub_cat_id, name, image, fileUrl)

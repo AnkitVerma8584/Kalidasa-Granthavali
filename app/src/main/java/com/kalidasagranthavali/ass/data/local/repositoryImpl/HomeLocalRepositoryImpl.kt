@@ -8,18 +8,20 @@ import com.kalidasagranthavali.ass.data.local.mapper.mapToHomeList
 import com.kalidasagranthavali.ass.data.local.mapper.mapToStringList
 import com.kalidasagranthavali.ass.domain.modals.HomeCategory
 import com.kalidasagranthavali.ass.domain.repository.local.HomeLocalRepository
-import kotlinx.coroutines.flow.Flow
 
 class HomeLocalRepositoryImpl(
     private val bannerDao: BannerDao,
     private val categoryDao: CategoryDao
 ) :
     HomeLocalRepository {
+    override suspend fun hasCachedBanners(): Boolean = bannerDao.getBannerCount() != 0
 
-    override fun getBanners(): Flow<List<String>> = bannerDao.getBanners().mapToStringList()
+    override suspend fun getBanners(): List<String> = bannerDao.getBanners().mapToStringList()
 
-    override fun getCategories(query: String): Flow<List<HomeCategory>> =
-        categoryDao.getCategories("%$query%").mapToHomeCategoryList()
+    override suspend fun hasCachedCategories(): Boolean = categoryDao.getCategoryCount() != 0
+
+    override suspend fun getCategories(): List<HomeCategory> =
+        categoryDao.getCategories().mapToHomeCategoryList()
 
     override suspend fun submitBanners(bannerList: List<String>) {
         bannerDao.insertBanners(bannerList.mapToBannerList())

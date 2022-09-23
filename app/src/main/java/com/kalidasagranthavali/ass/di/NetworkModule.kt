@@ -1,6 +1,7 @@
 package com.kalidasagranthavali.ass.di
 
 import com.kalidasagranthavali.ass.data.remote.Api
+import com.kalidasagranthavali.ass.data.remote.apis.FileDataApi
 import com.kalidasagranthavali.ass.data.remote.apis.FilesApi
 import com.kalidasagranthavali.ass.data.remote.apis.HomeApi
 import com.kalidasagranthavali.ass.data.remote.apis.SubCategoryApi
@@ -39,6 +40,13 @@ object NetworkModule {
     @Singleton
     fun provideFilesDao(@KalidasaRetrofitBuild retrofit: Retrofit): FilesApi =
         retrofit.create(FilesApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFileDataApi(): FileDataApi = Retrofit.Builder()
+        .baseUrl(Api.BASE_URL)
+        .build()
+        .create(FileDataApi::class.java)
 }
 
 @Qualifier

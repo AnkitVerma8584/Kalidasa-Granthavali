@@ -51,6 +51,9 @@ class SubCategoryViewModel @Inject constructor(
                     response.result.print()
                     subCategoryLocalRepository.submitSubCategories(response.result)
                 }
+                is Resource.Cached -> {
+
+                }
             }
 
         }

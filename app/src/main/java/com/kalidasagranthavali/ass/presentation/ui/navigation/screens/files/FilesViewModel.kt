@@ -50,6 +50,9 @@ class FilesViewModel @Inject constructor(
                 Resource.Loading -> {
 
                 }
+                is Resource.Cached->{
+
+                }
                 is Resource.Success -> {
                     response.result.print()
                     fileLocalRepository.submitFiles(response.result)

@@ -8,7 +8,9 @@ import com.kalidasagranthavali.ass.domain.utils.StringUtil
 import retrofit2.HttpException
 import java.io.IOException
 
-class FilesRemoteRepositoryImpl(private val filesApi: FilesApi) : FilesRemoteRepository {
+class FilesRemoteRepositoryImpl(
+    private val filesApi: FilesApi
+) : FilesRemoteRepository {
 
     override suspend fun getFiles(catId: Int, subCategoryId: Int): Resource<List<HomeFiles>> {
         return try {
@@ -30,4 +32,5 @@ class FilesRemoteRepositoryImpl(private val filesApi: FilesApi) : FilesRemoteRep
             )
         }
     }
+
 }

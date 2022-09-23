@@ -25,7 +25,7 @@ object DatabaseModule {
         Room.databaseBuilder(
             application,
             RoomDB::class.java,
-            "user_room_database"
+            "kalidasa_granthavali_database"
         ).fallbackToDestructiveMigration()
             .build()
 

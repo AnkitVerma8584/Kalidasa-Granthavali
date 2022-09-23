@@ -32,7 +32,7 @@ fun AboutPage() {
                 .fillMaxWidth(0.9f)
                 .fillMaxHeight()
                 .verticalScroll(scrollState),
-            text = stringResource(id = R.string.demo),
+            text = stringResource(id = R.string.about_us),
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(50.dp))

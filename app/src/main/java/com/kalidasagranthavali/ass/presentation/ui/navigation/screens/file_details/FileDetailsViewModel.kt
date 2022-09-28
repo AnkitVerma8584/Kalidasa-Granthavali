@@ -1,6 +1,5 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details
 
-import android.content.res.AssetManager
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
@@ -15,12 +14,14 @@ import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.domain.repository.local.FileLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.remote.FileDataRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
+import com.kalidasagranthavali.ass.domain.utils.StringUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.FileInputStream
 import java.io.InputStream
@@ -30,9 +31,11 @@ import javax.inject.Inject
 class FileDetailsViewModel @Inject constructor(
     private val filesRepository: FileDataRemoteRepository,
     private val fileLocalRepository: FileLocalRepository,
-    private val assetManager: AssetManager,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val _fileState = MutableStateFlow(FileDataState())
+    val fileState = _fileState.asStateFlow()
 
     private val _fileDataQuery = MutableStateFlow("")
     val fileDataQuery get() = _fileDataQuery.asStateFlow()
@@ -46,35 +49,54 @@ class FileDetailsViewModel @Inject constructor(
     }
 
     private suspend fun fetchFile(homeFiles: HomeFiles) {
-        when (val result = filesRepository.getFileData(homeFiles)) {
-            is Resource.Cached -> Unit
-            is Resource.Failure -> {
-
-            }
-            Resource.Loading -> {
-
-            }
-            is Resource.Success -> {
-                withContext(IO) {
-                    readData(FileInputStream(result.result))
+        filesRepository.getFileData(homeFiles).collectLatest { result ->
+            when (result) {
+                is Resource.Cached -> Unit
+                is Resource.Failure -> {
+                    _fileState.update {
+                        it.copy(isLoading = false, error = it.error)
+                    }
+                }
+                Resource.Loading -> {
+                    _fileState.update {
+                        it.copy(isLoading = true, error = null)
+                    }
+                }
+                is Resource.Success -> {
+                    _fileState.update {
+                        it.copy(isLoading = false, error = null)
+                    }
+                    withContext(IO) {
+                        readData(FileInputStream(result.result))
+                    }
                 }
             }
         }
     }
 
-    private fun readData(inputStream: InputStream = assetManager.open("myData.xml")) {
-        val factory = XmlPullParserFactory.newInstance()
-        val parser = factory.newPullParser()
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-        parser.setInput(inputStream, null)
-        var event = parser.eventType
-        while (event != XmlPullParser.END_DOCUMENT) {
-            when (event) {
-                XmlPullParser.START_TAG -> {}
-                XmlPullParser.TEXT -> _text.update { it + parser.text }
-                XmlPullParser.END_TAG -> {}
+    private fun readData(inputStream: InputStream) {
+
+        try {
+            val factory = XmlPullParserFactory.newInstance()
+            val parser = factory.newPullParser()
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+            parser.setInput(inputStream, null)
+            var event = parser.eventType
+            while (event != XmlPullParser.END_DOCUMENT) {
+                when (event) {
+                    XmlPullParser.START_TAG -> {}
+                    XmlPullParser.TEXT -> _text.update { it + parser.text }
+                    XmlPullParser.END_TAG -> {}
+                }
+                event = parser.next()
             }
-            event = parser.next()
+        } catch (e: Exception) {
+            _fileState.update {
+                it.copy(
+                    isLoading = false,
+                    error = StringUtil.DynamicText(if (e is XmlPullParserException) "The file is corrupted" else "Unable to display the file")
+                )
+            }
         }
     }
 
@@ -83,7 +105,7 @@ class FileDetailsViewModel @Inject constructor(
     }
 
     @Composable
-    fun getData(): StateFlow<AnnotatedString?> {
+    fun getData(): Flow<AnnotatedString> {
         val span = SpanStyle(
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontWeight = FontWeight.SemiBold,
@@ -104,6 +126,6 @@ class FileDetailsViewModel @Inject constructor(
                 append(text.substring(start, text.length))
                 toAnnotatedString()
             }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+        }
     }
 }

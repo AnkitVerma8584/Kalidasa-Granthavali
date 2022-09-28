@@ -18,6 +18,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import coil.load
 import com.flaviofaria.kenburnsview.KenBurnsView
 import com.google.accompanist.pager.*
+import com.kalidasagranthavali.ass.util.print
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 import kotlin.math.absoluteValue
@@ -38,6 +39,7 @@ fun Slider(
                     animationSpec = tween(500)
                 )
             } catch (e: Exception) {
+                e.print()
             }
         }
     }
@@ -80,12 +82,6 @@ fun Slider(
                     factory = { customView },
                     modifier = Modifier.fillMaxSize()
                 )
-                /*Image(
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds,
-                    painter = rememberAsyncImagePainter(model = banner[page]),
-                    contentDescription = null
-                )*/
             }
         }
 

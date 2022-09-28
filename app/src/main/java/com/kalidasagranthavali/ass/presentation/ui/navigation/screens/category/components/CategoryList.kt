@@ -41,9 +41,20 @@ fun ColumnScope.CategoryList(
             )
         }
         category?.let { list ->
-            items(items = list, key = { it.id }) { category ->
-                CategoryItem(data = category, onClick = onClick)
-            }
+            if (list.isEmpty())
+                item {
+                    Text(
+                        text = "No results found!",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(
+                            horizontal = 16.dp
+                        )
+                    )
+                }
+            else
+                items(items = list, key = { it.id }) { category ->
+                    CategoryItem(data = category, onClick = onClick)
+                }
         }
     }
 }

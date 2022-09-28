@@ -1,4 +1,4 @@
-package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components
+package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_sub_category.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -16,13 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.kalidasagranthavali.ass.domain.modals.HomeCategory
+import com.kalidasagranthavali.ass.domain.modals.HomeSubToSubCategory
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LazyItemScope.CategoryItem(
-    data: HomeCategory,
-    onClick: (HomeCategory) -> Unit
+fun LazyItemScope.SubToSubCategoryCard(
+    data: HomeSubToSubCategory,
+    onClick: (HomeSubToSubCategory) -> Unit
 ) {
     ElevatedCard(modifier = Modifier
         .padding(5.dp)
@@ -41,16 +41,31 @@ fun LazyItemScope.CategoryItem(
                 painter = rememberAsyncImagePainter(model = data.image),
                 contentDescription = null
             )
-            Text(
-                text = data.name,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 12.dp),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = data.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = data.description,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal
+                )
+            }
         }
 
     }

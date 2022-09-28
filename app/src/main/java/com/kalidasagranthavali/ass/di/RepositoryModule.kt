@@ -1,28 +1,18 @@
 package com.kalidasagranthavali.ass.di
 
 import android.app.Application
-import com.kalidasagranthavali.ass.data.local.dao.BannerDao
-import com.kalidasagranthavali.ass.data.local.dao.CategoryDao
-import com.kalidasagranthavali.ass.data.local.dao.FilesDao
-import com.kalidasagranthavali.ass.data.local.dao.SubCategoryDao
+import com.kalidasagranthavali.ass.data.local.dao.*
 import com.kalidasagranthavali.ass.data.local.repositoryImpl.FilesLocalRepositoryImpl
 import com.kalidasagranthavali.ass.data.local.repositoryImpl.HomeLocalRepositoryImpl
 import com.kalidasagranthavali.ass.data.local.repositoryImpl.SubCategoryLocalRepositoryImpl
-import com.kalidasagranthavali.ass.data.remote.apis.FileDataApi
-import com.kalidasagranthavali.ass.data.remote.apis.FilesApi
-import com.kalidasagranthavali.ass.data.remote.apis.HomeApi
-import com.kalidasagranthavali.ass.data.remote.apis.SubCategoryApi
-import com.kalidasagranthavali.ass.data.remote.repository.FileDataRemoteRepositoryImpl
-import com.kalidasagranthavali.ass.data.remote.repository.FilesRemoteRepositoryImpl
-import com.kalidasagranthavali.ass.data.remote.repository.HomeRemoteRepositoryImpl
-import com.kalidasagranthavali.ass.data.remote.repository.SubCategoryRemoteRepositoryImpl
+import com.kalidasagranthavali.ass.data.local.repositoryImpl.SubToSubCategoryLocalRepositoryImpl
+import com.kalidasagranthavali.ass.data.remote.apis.*
+import com.kalidasagranthavali.ass.data.remote.repository.*
 import com.kalidasagranthavali.ass.domain.repository.local.FileLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.local.HomeLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.local.SubCategoryLocalRepository
-import com.kalidasagranthavali.ass.domain.repository.remote.FileDataRemoteRepository
-import com.kalidasagranthavali.ass.domain.repository.remote.FilesRemoteRepository
-import com.kalidasagranthavali.ass.domain.repository.remote.HomeRemoteRepository
-import com.kalidasagranthavali.ass.domain.repository.remote.SubCategoryRemoteRepository
+import com.kalidasagranthavali.ass.domain.repository.local.SubToSubCategoryLocalRepository
+import com.kalidasagranthavali.ass.domain.repository.remote.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,32 +22,6 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 object RepositoryModule {
-
-    @Provides
-    @ViewModelScoped
-    fun provideHomeRemoteRepository(
-        homeApi: HomeApi,
-        homeLocalRepository: HomeLocalRepository
-    ): HomeRemoteRepository =
-        HomeRemoteRepositoryImpl(homeApi, homeLocalRepository)
-
-    @Provides
-    @ViewModelScoped
-    fun provideSubCategoryRepository(subCategoryApi: SubCategoryApi): SubCategoryRemoteRepository =
-        SubCategoryRemoteRepositoryImpl(subCategoryApi)
-
-    @Provides
-    @ViewModelScoped
-    fun provideFileRepository(filesApi: FilesApi): FilesRemoteRepository =
-        FilesRemoteRepositoryImpl(filesApi)
-
-    @Provides
-    @ViewModelScoped
-    fun provideFileDataRepository(
-        filesApi: FileDataApi,
-        application: Application
-    ): FileDataRemoteRepository =
-        FileDataRemoteRepositoryImpl(filesApi, application)
 
     @Provides
     @ViewModelScoped
@@ -76,9 +40,62 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
+    fun provideSubToSubCategoryLocalRepository(
+        subToSubCategoryDao: SubToSubCategoryDao
+    ): SubToSubCategoryLocalRepository =
+        SubToSubCategoryLocalRepositoryImpl(subToSubCategoryDao)
+
+    @Provides
+    @ViewModelScoped
     fun provideFilesLocalRepository(
         filesDao: FilesDao
     ): FileLocalRepository =
         FilesLocalRepositoryImpl(filesDao)
+
+    @Provides
+    @ViewModelScoped
+    fun provideHomeRemoteRepository(
+        homeApi: HomeApi,
+        homeLocalRepository: HomeLocalRepository
+    ): HomeRemoteRepository =
+        HomeRemoteRepositoryImpl(homeApi, homeLocalRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideSubCategoryRepository(
+        subCategoryApi: SubCategoryApi,
+        subCategoryLocalRepository: SubCategoryLocalRepository
+    ): SubCategoryRemoteRepository =
+        SubCategoryRemoteRepositoryImpl(subCategoryApi, subCategoryLocalRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideSubToSubCategoryRepository(
+        subToSubCategoryApi: SubToSubCategoryApi,
+        subToSubCategoryLocalRepository: SubToSubCategoryLocalRepository,
+        fileLocalRepository: FileLocalRepository
+    ): SubToSubCategoryRemoteRepository =
+        SubToSubCategoryRemoteRepositoryImpl(
+            subToSubCategoryApi,
+            subToSubCategoryLocalRepository,
+            fileLocalRepository
+        )
+
+    @Provides
+    @ViewModelScoped
+    fun provideFileRepository(
+        filesApi: FilesApi,
+        fileLocalRepository: FileLocalRepository
+    ): FilesRemoteRepository =
+        FilesRemoteRepositoryImpl(filesApi, fileLocalRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideFileDataRepository(
+        filesApi: FileDataApi,
+        application: Application
+    ): FileDataRemoteRepository =
+        FileDataRemoteRepositoryImpl(filesApi, application)
+
 
 }

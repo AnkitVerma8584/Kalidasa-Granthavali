@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -40,6 +42,7 @@ fun SearchBar(
     val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
     val trailingIconView = @Composable {
         IconButton(
             onClick = {
@@ -57,7 +60,7 @@ fun SearchBar(
         MaterialTheme.colorScheme.primaryContainer.copy(alpha = 1f),
         MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
         MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.05f)
     )
 
     Column(
@@ -79,7 +82,12 @@ fun SearchBar(
                 .focusRequester(focusRequester),
             value = query,
             placeholder = {
-                Text(hint, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
+                Text(
+                    hint,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             },
             trailingIcon = if (query.isNotBlank()) trailingIconView else null,
             singleLine = true,
@@ -103,7 +111,15 @@ fun SearchBar(
                 focusManager.clearFocus()
             })
         )
-        Spacer(modifier = Modifier.height(22.dp))
+        Spacer(modifier = Modifier.height(24.dp))
     }
-
 }
+
+
+@Preview
+@Composable
+private fun SearchViewPreview() {
+    SearchBar(query = "")
+}
+
+

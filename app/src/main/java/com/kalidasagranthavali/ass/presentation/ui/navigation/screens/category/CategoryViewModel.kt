@@ -28,7 +28,7 @@ class CategoryViewModel @Inject constructor(
     val categoryState = combine(_categoryState, categoryQuery) { state, query ->
         state.copy(
             data = state.data?.let {
-                it.filter { homeCategory -> homeCategory.name.contains(query) }
+                it.filter { homeCategory -> homeCategory.name.contains(query,ignoreCase = true) }
             }
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), CategoryState())

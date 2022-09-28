@@ -3,10 +3,7 @@ package com.kalidasagranthavali.ass.di
 import android.app.Application
 import androidx.room.Room
 import com.kalidasagranthavali.ass.data.local.RoomDB
-import com.kalidasagranthavali.ass.data.local.dao.BannerDao
-import com.kalidasagranthavali.ass.data.local.dao.CategoryDao
-import com.kalidasagranthavali.ass.data.local.dao.FilesDao
-import com.kalidasagranthavali.ass.data.local.dao.SubCategoryDao
+import com.kalidasagranthavali.ass.data.local.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,6 +38,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideSubCategoryDao(db: RoomDB): SubCategoryDao = db.getSubCategoryDao()
+
+    @Singleton
+    @Provides
+    fun provideSubToSubCategoryDao(db: RoomDB): SubToSubCategoryDao = db.getSubToSubCategoryDao()
 
 
     @Singleton

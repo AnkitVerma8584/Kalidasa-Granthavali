@@ -1,5 +1,6 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.components
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,17 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.kalidasagranthavali.ass.data.remote.Api.getDocumentUrl
 import com.kalidasagranthavali.ass.domain.modals.HomeFiles
+import com.rajat.pdfviewer.PdfViewerActivity
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyGridItemScope.FileCard(
     item: HomeFiles,
     textBackground: List<Color>,
-    onFileClicked: (HomeFiles) -> Unit
+    onFileClicked: (HomeFiles) -> Unit,
+    context: Context = LocalContext.current
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -32,7 +37,20 @@ fun LazyGridItemScope.FileCard(
             .animateItemPlacement()
             .fillMaxWidth()
             .aspectRatio(2 / 3f)
-            .clickable { onFileClicked(item) }
+            .clickable {
+                if (item.isPdf)
+                    context.startActivity(
+                        PdfViewerActivity.launchPdfFromUrl(
+                            context,
+                            item.file_url.getDocumentUrl(),
+                            item.name,
+                            "",
+                            enableDownload = false
+                        )
+                    )
+                else
+                    onFileClicked(item)
+            }
     ) {
         Box(
             modifier = Modifier

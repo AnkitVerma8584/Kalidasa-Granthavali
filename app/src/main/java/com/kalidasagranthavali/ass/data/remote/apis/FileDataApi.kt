@@ -11,4 +11,5 @@ interface FileDataApi {
     suspend fun getFilesData(
         @Url fileUrl: String
     ): Response<ResponseBody>
+
 }

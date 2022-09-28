@@ -3,13 +3,12 @@ package com.kalidasagranthavali.ass.data.local.modals
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "files")
-data class Files(
+@Entity(tableName = "sub_to_sub_category")
+data class SubToSubCategory(
     @PrimaryKey val id: Int,
     val cat_id: Int,
     val sub_cat_id: Int,
-    val sub_to_sub_cat_id: Int?,
     val name: String,
     val image: String,
-    val fileUrl: String
+    val description: String
 )

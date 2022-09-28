@@ -20,6 +20,7 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.contact.Co
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.FileDetailsPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.FilePage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_category.SubCategoryPage
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_sub_category.SubToSubCategoryPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.support.SupportPage
 
 @Composable
@@ -58,9 +59,29 @@ fun NavHostFragments(
             route = NavigationFragment.SubCategory.route,
             arguments = listOf(navArgument("cat_id") { type = NavType.IntType })
         ) {
-            SubCategoryPage(onNavigateToFile = {
+            SubCategoryPage(onSubCategoryClicked = {
                 NavigationFragment.Files.title = StringUtil.DynamicText(it.name)
-                navController.navigate("files/${it.cat_id}/${it.id}") {
+                navController.navigate("sub_to_sub_category/${it.cat_id}/${it.id}") {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            })
+        }
+        composable(
+            route = NavigationFragment.SubToSubCategory.route,
+            arguments = listOf(
+                navArgument("cat_id") { type = NavType.IntType },
+                navArgument("sub_cat_id") { type = NavType.IntType })
+        ) {
+            SubToSubCategoryPage(onSubToSubCategoryClick = {
+                NavigationFragment.Files.title = StringUtil.DynamicText(it.name)
+                navController.navigate("files/${it.cat_id}/${it.sub_cat_id}/${it.id}") {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }, onFileClicked = {
+                NavigationFragment.FileDetails.title = StringUtil.DynamicText(it.name)
+                navController.navigate("file_details/${it.id}") {
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -69,7 +90,8 @@ fun NavHostFragments(
         composable(
             route = NavigationFragment.Files.route,
             arguments = listOf(navArgument("cat_id") { type = NavType.IntType },
-                navArgument("sub_cat_id") { type = NavType.IntType })
+                navArgument("sub_cat_id") { type = NavType.IntType },
+                navArgument("sub_to_sub_cat_id") { type = NavType.IntType })
         ) {
             FilePage(onFileClicked = {
                 NavigationFragment.FileDetails.title = StringUtil.DynamicText(it.name)
@@ -79,8 +101,10 @@ fun NavHostFragments(
                 }
             })
         }
-        composable(route = NavigationFragment.FileDetails.route,
-            arguments = listOf(navArgument("file_id") { type = NavType.IntType })) {
+        composable(
+            route = NavigationFragment.FileDetails.route,
+            arguments = listOf(navArgument("file_id") { type = NavType.IntType })
+        ) {
             FileDetailsPage()
         }
     }

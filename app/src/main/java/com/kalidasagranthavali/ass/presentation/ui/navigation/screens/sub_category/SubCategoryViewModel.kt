@@ -3,18 +3,11 @@ package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_categ
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kalidasagranthavali.ass.domain.modals.HomeSubCategory
-import com.kalidasagranthavali.ass.domain.repository.local.SubCategoryLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.remote.SubCategoryRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
-import com.kalidasagranthavali.ass.util.print
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,40 +15,52 @@ import javax.inject.Inject
 @HiltViewModel
 class SubCategoryViewModel @Inject constructor(
     private val subCategoryRemoteRepository: SubCategoryRemoteRepository,
-    private val savedStateHandle: SavedStateHandle,
-    private val subCategoryLocalRepository: SubCategoryLocalRepository
-) :
-    ViewModel() {
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val _subCategoryQuery = MutableStateFlow("")
     val subCategoryQuery get() = _subCategoryQuery.asStateFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val subCategories: Flow<List<HomeSubCategory>> = subCategoryQuery.flatMapLatest {
-        subCategoryLocalRepository.getSubCategories(it, savedStateHandle.get<Int>("cat_id") ?: 0)
-    }
+    private val _state = MutableStateFlow(SubCategoryState())
+
+    val subCategoryState = combine(_state, subCategoryQuery) { state, query ->
+        state.copy(
+            data = state.data?.let {
+                it.filter { item -> item.name.contains(query,ignoreCase = true) }
+            }
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SubCategoryState())
 
     init {
         viewModelScope.launch(Dispatchers.Default) {
-            when (
-                val response = subCategoryRemoteRepository.getSubCategories(
-                    savedStateHandle.get<Int>("cat_id") ?: 0
-                )) {
-                is Resource.Failure -> {
+            getSubCategoryData(savedStateHandle.get<Int>("cat_id") ?: 0)
+        }
+    }
 
+    private suspend fun getSubCategoryData(catId: Int) {
+        subCategoryRemoteRepository.getSubCategories(catId).collectLatest {
+            when (it) {
+                is Resource.Cached -> {
+                    _state.update { state ->
+                        state.copy(isLoading = false, data = it.result)
+                    }
+                }
+                is Resource.Failure -> {
+                    _state.update { state ->
+                        state.copy(isLoading = false, error = it.error)
+                    }
                 }
                 Resource.Loading -> {
-
+                    _state.update { state ->
+                        state.copy(isLoading = true, error = null, data = null)
+                    }
                 }
                 is Resource.Success -> {
-                    response.result.print()
-                    subCategoryLocalRepository.submitSubCategories(response.result)
-                }
-                is Resource.Cached -> {
-
+                    _state.update { state ->
+                        state.copy(isLoading = false, error = null, data = it.result)
+                    }
                 }
             }
-
         }
     }
 

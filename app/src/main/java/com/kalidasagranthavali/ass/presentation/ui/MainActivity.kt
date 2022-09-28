@@ -43,10 +43,10 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    MainPage {
+                    MainPage(onLanguageSelected = {
                         LocalHelper.setLocale(this@MainActivity, it)
                         recreate()
-                    }
+                    })
                 }
             }
         }
@@ -60,25 +60,36 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainPage(
-    onLanguageSelected: (tag: String) -> Unit
-) {
-    val screens = listOf(
+    onLanguageSelected: (tag: String) -> Unit,
+    allScreens: List<NavigationFragment> = listOf(
         NavigationFragment.Home,
         NavigationFragment.About,
         NavigationFragment.Contact,
         NavigationFragment.Support,
         NavigationFragment.SubCategory,
+        NavigationFragment.SubToSubCategory,
         NavigationFragment.Files,
         NavigationFragment.FileDetails
+    ),
+    menuScreens: List<NavigationFragment> = listOf(
+        NavigationFragment.Home,
+        NavigationFragment.About,
+        NavigationFragment.Contact,
+        NavigationFragment.Support
     )
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navController: NavHostController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val currentFragment by derivedStateOf {
-        screens.find { it.route == navController.currentBackStackEntry?.destination?.route }
+
+    val currentFragment by remember(currentDestination) {
+        derivedStateOf {
+            allScreens.find { it.route == navController.currentBackStackEntry?.destination?.route }
+        }
     }
+
     ModalNavigationDrawer(drawerState = drawerState,
         gesturesEnabled = currentFragment?.icon != null,
         drawerContent = {
@@ -92,7 +103,7 @@ private fun MainPage(
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
                 Spacer(Modifier.height(8.dp))
-                screens.filter { it.icon != null }.forEach { item ->
+                menuScreens.forEach { item ->
                     MenuItem(item = item,
                         isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                         onMenuClick = {

@@ -50,7 +50,6 @@ class HomeRemoteRepositoryImpl(
             if (homeLocalRepository.hasCachedCategories())
                 emit(Resource.Cached(homeLocalRepository.getCategories()))
             val result = homeApi.getCategoryData()
-            result.body().print("CATEGORY")
             if (result.isSuccessful && result.body() != null) {
                 if (result.body()!!.success) {
                     val data = result.body()?.data!!

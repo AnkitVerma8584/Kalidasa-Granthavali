@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -36,8 +37,8 @@ fun LazyItemScope.SubCategoryCard(
         ) {
             Image(
                 modifier = Modifier
-                    .height(100.dp)
-                    .width(100.dp),
+                    .height(120.dp)
+                    .width(120.dp),
                 contentScale = ContentScale.Crop,
                 painter = rememberAsyncImagePainter(model = data.image),
                 contentDescription = null
@@ -51,6 +52,8 @@ fun LazyItemScope.SubCategoryCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -59,6 +62,8 @@ fun LazyItemScope.SubCategoryCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Normal
                 )

@@ -1,11 +1,12 @@
 package com.kalidasagranthavali.ass.domain.repository.local
 
 import com.kalidasagranthavali.ass.domain.modals.HomeSubCategory
-import kotlinx.coroutines.flow.Flow
 
 interface SubCategoryLocalRepository {
 
-    fun getSubCategories(query: String, id: Int): Flow<List<HomeSubCategory>>
+    suspend fun getSubCategories(id: Int): List<HomeSubCategory>
+
+    suspend fun getSubCategoryCount(id: Int): Int
 
     suspend fun submitSubCategories(subCategory: List<HomeSubCategory>)
 

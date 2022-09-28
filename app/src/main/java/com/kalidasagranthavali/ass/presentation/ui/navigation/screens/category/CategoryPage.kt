@@ -1,6 +1,5 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,8 +29,9 @@ fun CategoryPage(
 
     val banners by viewModel.bannerState.collectAsState()
     val categories by viewModel.categoryState.collectAsState()
+    val scope = rememberCoroutineScope()
 
-    Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+    Column(modifier = modifier.fillMaxSize()) {
         SearchBar(
             hint = stringResource(id = R.string.category_search),
             query = viewModel.categoryQuery.collectAsState().value,
@@ -52,7 +52,6 @@ fun CategoryPage(
             banner = banners,
             onClick = onClick
         )
-        val scope = rememberCoroutineScope()
         categories.error?.let {
             val message = it.asString()
             scope.launch {

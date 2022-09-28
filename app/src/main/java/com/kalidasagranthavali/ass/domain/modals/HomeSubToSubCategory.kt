@@ -1,13 +1,10 @@
 package com.kalidasagranthavali.ass.domain.modals
 
-data class HomeFiles(
+data class HomeSubToSubCategory(
     val id: Int,
     val cat_id: Int,
     val sub_cat_id: Int,
-    val sub_to_sub_cat_id: Int?,
     val name: String,
     val image: String,
-    val file_url: String
-) {
-    val isPdf get():Boolean = file_url.endsWith(".pdf")
-}
+    val description: String
+)

@@ -25,15 +25,16 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.c
 fun FileDetailsPage(
     viewModel: FileDetailsViewModel = hiltViewModel()
 ) {
-    val text by viewModel.getData().collectAsState()
+    val text by viewModel.getData().collectAsState(initial = null)
+    val state by viewModel.fileState.collectAsState()
     val query by viewModel.fileDataQuery.collectAsState()
     val scrollState = rememberScrollState()
 
     var scale by remember { mutableStateOf(16f) }
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchBar(query = query, onSearchQueryChanged = {
-            viewModel.updateQuery(it)
-        }, onClearPressed = { viewModel.updateQuery() }, hint = "Search for any text..."
+        SearchBar(
+            query = query, onSearchQueryChanged = { viewModel.updateQuery(it) },
+            onClearPressed = { viewModel.updateQuery() }, hint = "Search for any text..."
         )
         Box(
             modifier = Modifier
@@ -44,7 +45,12 @@ fun FileDetailsPage(
                     }
                 }, contentAlignment = Alignment.Center
         ) {
-            Details(text = text, scrollState = scrollState, scale = scale)
+            if (state.isLoading)
+                CircularProgressIndicator()
+
+            state.error?.let {
+                Text(text = it.asString(), color = MaterialTheme.colorScheme.error)
+            } ?: Details(text = text, scrollState = scrollState, scale = scale)
         }
     }
 }

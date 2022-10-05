@@ -27,7 +27,8 @@ fun ColumnScope.CategoryList(
     LazyColumn(modifier = Modifier.weight(1f)) {
         banner.data?.let {
             item {
-                Slider(banner = it)
+                if (it.isNotEmpty())
+                    Slider(banner = it)
             }
         }
         stickyHeader {

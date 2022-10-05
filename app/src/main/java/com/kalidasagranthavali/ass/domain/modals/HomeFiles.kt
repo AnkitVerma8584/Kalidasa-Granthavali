@@ -6,7 +6,7 @@ data class HomeFiles(
     val sub_cat_id: Int,
     val sub_to_sub_cat_id: Int?,
     val name: String,
-    val image: String,
+    val description: String,
     val file_url: String
 ) {
     val isPdf get():Boolean = file_url.endsWith(".pdf")

@@ -8,7 +8,7 @@ import com.kalidasagranthavali.ass.data.local.modals.*
 @Database(
     entities = [Banner::class, Category::class, SubCategory::class, SubToSubCategory::class, Files::class],
     exportSchema = false,
-    version = 3
+    version = 1
 )
 abstract class RoomDB : RoomDatabase() {
     abstract fun getBannerDao(): BannerDao

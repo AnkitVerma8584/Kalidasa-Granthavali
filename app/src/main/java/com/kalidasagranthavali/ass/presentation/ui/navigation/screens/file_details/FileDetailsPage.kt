@@ -1,13 +1,9 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,10 +24,9 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.c
 fun FileDetailsPage(
     viewModel: FileDetailsViewModel = hiltViewModel()
 ) {
-    val text by viewModel.getData().collectAsState(initial = null)
+    val text by viewModel.text.collectAsState()
     val state by viewModel.fileState.collectAsState()
     val query by viewModel.fileDataQuery.collectAsState()
-    val scrollState = rememberScrollState()
 
     var scale by remember { mutableStateOf(16f) }
     Column(modifier = Modifier.fillMaxSize()) {
@@ -43,35 +41,84 @@ fun FileDetailsPage(
                     detectTransformGestures { _, _, zoom, _ ->
                         if ((scale * zoom) in 11.0f..60.0f) scale *= zoom
                     }
-                }, contentAlignment = Alignment.Center
+                }
         ) {
             if (state.isLoading)
-                CircularProgressIndicator()
-
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             state.error?.let {
-                Text(text = it.asString(), color = MaterialTheme.colorScheme.error)
-            } ?: Details(text = text, scrollState = scrollState, scale = scale)
+                Text(
+                    text = it.asString(),
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } ?: DocumentContent(
+                text = text,
+                scale = scale,
+                query = query
+            )
         }
     }
 }
 
 @Composable
-private fun Details(
-    text: AnnotatedString?,
-    scrollState: ScrollState,
+private fun BoxScope.DocumentContent(
+    text: List<String?>,
+    query: String,
     scale: Float
 ) {
-    if (text == null || text.text.isBlank())
-        CircularProgressIndicator()
-    else
+    if (text.isEmpty())
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    else {
+        LazyColumn {
+            items(text) { item ->
+                DocumentText(query = query, text = item, scale = scale)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DocumentText(
+    query: String,
+    text: String?,
+    scale: Float,
+    spanStyle: SpanStyle = SpanStyle(
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
+        fontWeight = FontWeight.SemiBold,
+        background = MaterialTheme.colorScheme.primaryContainer
+    )
+) {
+    text?.let {
+        val annotatedString by remember(query) {
+            derivedStateOf {
+                buildAnnotatedString {
+                    var start = 0
+                    while (it.indexOf(
+                            query,
+                            start,
+                            ignoreCase = true
+                        ) != -1 && query.isNotBlank()
+                    ) {
+                        val firstIndex = it.indexOf(query, start, true)
+                        val end = firstIndex + query.length
+                        append(it.substring(start, firstIndex))
+                        withStyle(style = spanStyle) {
+                            append(it.substring(firstIndex, end))
+                        }
+                        start = end
+                    }
+                    append(it.substring(start, it.length))
+                    toAnnotatedString()
+                }
+            }
+        }
         Text(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
-            text = text,
+            text = annotatedString,
             fontSize = scale.sp,
             lineHeight = scale.sp * 1.2
         )
+    }
 }

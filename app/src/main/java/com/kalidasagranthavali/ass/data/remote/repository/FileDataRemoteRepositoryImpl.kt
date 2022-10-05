@@ -7,6 +7,7 @@ import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.domain.repository.remote.FileDataRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
+import com.kalidasagranthavali.ass.util.isInValidFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +21,7 @@ class FileDataRemoteRepositoryImpl(
 ) : FileDataRemoteRepository {
     override fun getFileData(homeFiles: HomeFiles): Flow<Resource<File>> = flow {
         try {
-            if (!homeFiles.file_url.endsWith(".xml"))
+            if (homeFiles.file_url.isInValidFile())
                 emit(Resource.Failure(StringUtil.DynamicText("Invalid file type")))
 
             val result = fileDataApi.getFilesData(homeFiles.file_url.getDocumentExtension())

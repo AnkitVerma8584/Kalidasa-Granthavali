@@ -31,22 +31,38 @@ fun List<SubCategory>.mapToHomeSubCategoryList(): List<HomeSubCategory> = this.m
 }
 
 fun List<HomeSubToSubCategory>.mapToSubToSubCategoryList(): List<SubToSubCategory> = this.map {
-    SubToSubCategory(it.id, it.cat_id, it.sub_cat_id, it.name, it.image, it.description)
+    SubToSubCategory(it.id, it.cat_id, it.sub_cat_id, it.name, it.description)
 }
 
 fun List<SubToSubCategory>.mapToHomeSubToSubCategoryList(): List<HomeSubToSubCategory> =
     this.map {
-        HomeSubToSubCategory(it.id, it.cat_id, it.sub_cat_id, it.name, it.image, it.description)
+        HomeSubToSubCategory(it.id, it.cat_id, it.sub_cat_id, it.name, it.description)
     }
 
 
 fun List<HomeFiles>.mapToFilesList(): List<Files> = this.map {
-    Files(it.id, it.cat_id, it.sub_cat_id, it.sub_to_sub_cat_id, it.name, it.image, it.file_url)
+    Files(
+        it.id,
+        it.cat_id,
+        it.sub_cat_id,
+        it.sub_to_sub_cat_id,
+        it.name,
+        it.description,
+        it.file_url
+    )
 }
 
 fun List<Files>.mapToHomeFilesList(): List<HomeFiles> = this.map {
-    HomeFiles(it.id, it.cat_id, it.sub_cat_id, it.sub_to_sub_cat_id, it.name, it.image, it.fileUrl)
+    HomeFiles(
+        it.id,
+        it.cat_id,
+        it.sub_cat_id,
+        it.sub_to_sub_cat_id,
+        it.name,
+        it.description,
+        it.fileUrl
+    )
 }
 
 fun Files.mapToHomeFiles(): HomeFiles =
-    HomeFiles(id, cat_id, sub_cat_id, sub_to_sub_cat_id, name, image, fileUrl)
+    HomeFiles(id, cat_id, sub_cat_id, sub_to_sub_cat_id, name, description, fileUrl)

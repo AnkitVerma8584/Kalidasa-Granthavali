@@ -60,7 +60,7 @@ fun NavHostFragments(
             arguments = listOf(navArgument("cat_id") { type = NavType.IntType })
         ) {
             SubCategoryPage(onSubCategoryClicked = {
-                NavigationFragment.Files.title = StringUtil.DynamicText(it.name)
+                NavigationFragment.SubToSubCategory.title = StringUtil.DynamicText(it.name)
                 navController.navigate("sub_to_sub_category/${it.cat_id}/${it.id}") {
                     launchSingleTop = true
                     restoreState = true

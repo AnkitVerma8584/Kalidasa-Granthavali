@@ -9,6 +9,5 @@ data class SubToSubCategory(
     val cat_id: Int,
     val sub_cat_id: Int,
     val name: String,
-    val image: String,
     val description: String
 )

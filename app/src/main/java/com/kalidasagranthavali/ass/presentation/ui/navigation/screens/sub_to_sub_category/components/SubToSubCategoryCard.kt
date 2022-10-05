@@ -2,20 +2,24 @@ package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_su
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.kalidasagranthavali.ass.domain.modals.HomeSubToSubCategory
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -25,31 +29,24 @@ fun LazyItemScope.SubToSubCategoryCard(
     onClick: (HomeSubToSubCategory) -> Unit
 ) {
     ElevatedCard(modifier = Modifier
-        .padding(5.dp)
-        .animateItemPlacement()
         .fillMaxWidth()
+        .padding(12.dp)
+        .animateItemPlacement()
         .clickable { onClick(data) }) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                modifier = Modifier
-                    .height(120.dp)
-                    .width(120.dp),
-                contentScale = ContentScale.Crop,
-                painter = rememberAsyncImagePainter(model = data.image),
-                contentDescription = null
-            )
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .wrapContentWidth()
             ) {
                 Text(
                     text = data.name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleMedium,
@@ -57,16 +54,21 @@ fun LazyItemScope.SubToSubCategoryCard(
                 )
                 Text(
                     text = data.description,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Normal
                 )
             }
+            Image(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                imageVector = Icons.Filled.KeyboardArrowRight,
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimaryContainer),
+                contentDescription = null
+            )
         }
-
     }
 }

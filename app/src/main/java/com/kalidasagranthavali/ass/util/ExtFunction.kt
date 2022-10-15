@@ -8,3 +8,5 @@ fun Any?.print(tag: String = "TAG") {
 
 fun String.isInValidFile(): Boolean =
     !this.endsWith(".pdf") && !this.endsWith(".txt")
+
+fun String.isReadable(): Boolean = this.endsWith(".txt")

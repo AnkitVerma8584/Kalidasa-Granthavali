@@ -37,8 +37,8 @@ fun LazyItemScope.SubCategoryCard(
         ) {
             Image(
                 modifier = Modifier
-                    .height(120.dp)
-                    .width(120.dp),
+                    .height(100.dp)
+                    .width(100.dp),
                 contentScale = ContentScale.Crop,
                 painter = rememberAsyncImagePainter(model = data.image),
                 contentDescription = null

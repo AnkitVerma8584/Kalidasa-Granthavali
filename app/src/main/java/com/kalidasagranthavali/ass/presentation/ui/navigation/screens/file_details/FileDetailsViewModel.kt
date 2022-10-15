@@ -8,12 +8,12 @@ import com.kalidasagranthavali.ass.domain.repository.local.FileLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.remote.FileDataRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDataState
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDocumentText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
@@ -39,31 +39,42 @@ class FileDetailsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(IO) {
-            fetchFile(fileLocalRepository.getFileById(savedStateHandle.get<Int>("file_id") ?: 0))
+            fetchFile(
+                fileLocalRepository.getFileById(savedStateHandle.get<Int>("file_id") ?: 0)
+            )
         }
     }
 
-    private suspend fun fetchFile(homeFiles: HomeFiles) {
-        filesRepository.getFileData(homeFiles).collectLatest { result ->
-            when (result) {
-                is Resource.Cached -> Unit
-                is Resource.Failure -> {
-                    _fileState.update {
-                        it.copy(isLoading = false, error = it.error)
+    private suspend fun fetchFile(homeFiles: HomeFiles?) {
+        homeFiles?.let {
+            filesRepository.getFileData(homeFiles).collectLatest { result ->
+                when (result) {
+                    is Resource.Cached -> {
+                        _fileState.update {
+                            it.copy(isLoading = false, error = null)
+                        }
+                        readTextFile(result.result)
                     }
-                }
-                Resource.Loading -> {
-                    _fileState.update {
-                        it.copy(isLoading = true, error = null)
+                    is Resource.Failure -> {
+                        _fileState.update {
+                            it.copy(isLoading = false, error = it.error)
+                        }
                     }
-                }
-                is Resource.Success -> {
-                    _fileState.update {
-                        it.copy(isLoading = false, error = null)
+                    Resource.Loading -> {
+                        _fileState.update {
+                            it.copy(isLoading = true, error = null)
+                        }
                     }
-                    readTextFile(result.result)
+                    is Resource.Success -> {
+                        _fileState.update {
+                            it.copy(isLoading = false, error = null)
+                        }
+                        readTextFile(result.result)
+                    }
                 }
             }
+        } ?: _fileState.update {
+            it.copy(isLoading = false, error = StringUtil.DynamicText("Unable to load file"))
         }
     }
 
@@ -72,9 +83,19 @@ class FileDetailsViewModel @Inject constructor(
             val br = BufferedReader(FileReader(file))
             var line: String?
             val text = mutableListOf<String?>()
+            val paragraph = StringBuilder()
+            var i = 0
             while (br.readLine().also { line = it } != null) {
-                text.add(line)
+                paragraph.append(line)
+                if (i == 2) {
+                    text.add(paragraph.toString())
+                    paragraph.clear()
+                    i = 0
+                } else paragraph.append("\n")
+                i++
             }
+            if (paragraph.isNotBlank())
+                text.add(paragraph.toString())
             br.close()
             _text.update { text.toList() }
         } catch (e: Exception) {
@@ -86,6 +107,14 @@ class FileDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    val searchedText = combine(fileDataQuery, text) { query, list ->
+        list.mapIndexed { index, s ->
+            FileDocumentText(index, s)
+        }.filter { s ->
+            s.text?.contains(query, ignoreCase = true) ?: false
+        }
+    }.flowOn(Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun updateQuery(newQuery: String = "") {
         _fileDataQuery.value = newQuery

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kalidasagranthavali.ass.domain.repository.remote.SubToSubCategoryRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
-import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.FilesState
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals.FilesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

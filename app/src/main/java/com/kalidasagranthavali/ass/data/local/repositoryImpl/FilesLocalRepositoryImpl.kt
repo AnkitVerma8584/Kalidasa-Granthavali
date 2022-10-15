@@ -26,7 +26,7 @@ class FilesLocalRepositoryImpl(private val filesDao: FilesDao) :
     override suspend fun getFilesCount(cat_id: Int, sub_cat_id: Int, sub_to_sub_cat_id: Int): Int =
         filesDao.getFileCount(cat_id, sub_cat_id, sub_to_sub_cat_id)
 
-    override suspend fun getFileById(fileId: Int): HomeFiles =
+    override suspend fun getFileById(fileId: Int): HomeFiles? =
         filesDao.getFileById(fileId).mapToHomeFiles()
 
     override suspend fun submitFiles(files: List<HomeFiles>) {

@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -30,12 +31,13 @@ import androidx.navigation.compose.rememberNavController
 import com.kalidasagranthavali.ass.R
 import com.kalidasagranthavali.ass.presentation.theme.KalidasaGranthavaliTheme
 import com.kalidasagranthavali.ass.presentation.ui.navigation.modal.NavigationFragment
-import com.kalidasagranthavali.ass.util.locale.LocalHelper
+import com.kalidasagranthavali.ass.util.locale.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -44,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     MainPage(onLanguageSelected = {
-                        LocalHelper.setLocale(this@MainActivity, it)
+                        LocaleHelper.setLocale(this, it)
                         recreate()
                     })
                 }
@@ -53,15 +55,14 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(LocalHelper.onAttach(newBase!!))
+        super.attachBaseContext(LocaleHelper.onAttach(newBase!!))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainPage(
-    onLanguageSelected: (tag: String) -> Unit,
-    allScreens: List<NavigationFragment> = listOf(
+    onLanguageSelected: (tag: String) -> Unit, allScreens: List<NavigationFragment> = listOf(
         NavigationFragment.Home,
         NavigationFragment.About,
         NavigationFragment.Contact,
@@ -70,8 +71,7 @@ private fun MainPage(
         NavigationFragment.SubToSubCategory,
         NavigationFragment.Files,
         NavigationFragment.FileDetails
-    ),
-    menuScreens: List<NavigationFragment> = listOf(
+    ), menuScreens: List<NavigationFragment> = listOf(
         NavigationFragment.Home,
         NavigationFragment.About,
         NavigationFragment.Contact,
@@ -175,6 +175,8 @@ private fun AppBar(
             text = title,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }, navigationIcon = {
@@ -234,8 +236,7 @@ private fun TopAppBarDropdownMenu(
 
 @Composable
 private fun MenuItem(
-    @StringRes languageId: Int,
-    onMenuClick: () -> Unit
+    @StringRes languageId: Int, onMenuClick: () -> Unit
 ) {
     DropdownMenuItem(text = {
         Text(

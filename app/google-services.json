@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "707307770206",
+    "project_id": "kalidasa-granthavali",
+    "storage_bucket": "kalidasa-granthavali.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707307770206:android:c57e1a2daba874159d7fcf",
+        "android_client_info": {
+          "package_name": "com.kalidasagranthavali.ass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707307770206-jquaer2e8knab80aae00ijk8sh5lhhih.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoU3JLsgQ8KArN4DQ-Tl3_B4YF3Qb0D0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707307770206-jquaer2e8knab80aae00ijk8sh5lhhih.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

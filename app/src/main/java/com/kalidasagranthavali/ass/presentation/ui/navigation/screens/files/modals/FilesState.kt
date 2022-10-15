@@ -1,4 +1,4 @@
-package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files
+package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals
 
 import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.domain.utils.StringUtil

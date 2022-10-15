@@ -85,9 +85,11 @@ object RepositoryModule {
     @ViewModelScoped
     fun provideFileRepository(
         filesApi: FilesApi,
-        fileLocalRepository: FileLocalRepository
+        fileLocalRepository: FileLocalRepository,
+        filesDataApi: FileDataApi,
+        application: Application
     ): FilesRemoteRepository =
-        FilesRemoteRepositoryImpl(filesApi, fileLocalRepository)
+        FilesRemoteRepositoryImpl(filesApi, fileLocalRepository, application, filesDataApi)
 
     @Provides
     @ViewModelScoped

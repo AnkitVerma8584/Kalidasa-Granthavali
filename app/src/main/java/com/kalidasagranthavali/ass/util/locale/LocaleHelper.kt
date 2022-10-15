@@ -3,7 +3,7 @@ package com.kalidasagranthavali.ass.util.locale
 import android.content.Context
 import java.util.*
 
-object LocalHelper {
+object LocaleHelper {
 
     private const val SELECTED_LANGUAGE = "Locale.Helper.Selected.Language"
     private const val LANGUAGE_PREFERENCE = "com.kalidasagranthavali.ass.Kalidasa.Granthavali"
@@ -42,20 +42,4 @@ object LocalHelper {
         return context.createConfigurationContext(configuration)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

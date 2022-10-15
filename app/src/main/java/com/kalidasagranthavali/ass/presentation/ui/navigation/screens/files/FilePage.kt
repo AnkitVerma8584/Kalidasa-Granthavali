@@ -19,11 +19,12 @@ fun FilePage(
     onFileClicked: (HomeFiles) -> Unit
 ) {
     val files by viewModel.fileState.collectAsState()
-
+    val searchedData by viewModel.fileData.collectAsState()
+    val query by viewModel.query.collectAsState()
     Column(modifier = Modifier.fillMaxSize()) {
         SearchBar(
             hint = "Search for any files",
-            query = viewModel.query.collectAsState().value,
+            query = query,
             onClearPressed = {
                 viewModel.queryChanged()
             },
@@ -32,8 +33,7 @@ fun FilePage(
             }
         )
         files.data?.let {
-            FilesList(data = it, onFileClicked = onFileClicked)
+            FilesList(searchedContent = searchedData, data = it,query, onFileClicked = onFileClicked)
         } ?: CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-
     }
 }

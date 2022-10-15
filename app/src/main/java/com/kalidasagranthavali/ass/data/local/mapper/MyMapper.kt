@@ -64,5 +64,7 @@ fun List<Files>.mapToHomeFilesList(): List<HomeFiles> = this.map {
     )
 }
 
-fun Files.mapToHomeFiles(): HomeFiles =
-    HomeFiles(id, cat_id, sub_cat_id, sub_to_sub_cat_id, name, description, fileUrl)
+fun Files?.mapToHomeFiles(): HomeFiles? =
+    this?.let {
+        HomeFiles(id, cat_id, sub_cat_id, sub_to_sub_cat_id, name, description, fileUrl)
+    }

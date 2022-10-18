@@ -9,5 +9,5 @@ data class HomeFiles(
     val description: String,
     val file_url: String
 ) {
-    val isPdf get():Boolean = file_url.endsWith(".pdf")
+    val isNotPdf get():Boolean = !file_url.endsWith(".pdf")
 }

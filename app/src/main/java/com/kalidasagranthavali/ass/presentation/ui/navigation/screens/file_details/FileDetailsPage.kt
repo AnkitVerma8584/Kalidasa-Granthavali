@@ -29,22 +29,19 @@ fun FileDetailsPage(
     var scale by remember { mutableStateOf(16f) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchBar(
-            query = query,
+        SearchBar(query = query,
             onSearchQueryChanged = { viewModel.updateQuery(it) },
             onClearPressed = { viewModel.updateQuery() },
             hint = "Search for any text...",
             minimumLetter = 3
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTransformGestures { _, _, zoom, _ ->
-                        if ((scale * zoom) in 11.0f..60.0f) scale *= zoom
-                    }
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTransformGestures { _, _, zoom, _ ->
+                    if ((scale * zoom) in 11.0f..60.0f) scale *= zoom
                 }
-        ) {
+            }) {
             if (state.isLoading) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             state.error?.let {
                 Text(
@@ -64,10 +61,7 @@ fun FileDetailsPage(
 
 @Composable
 private fun BoxScope.DocumentContent(
-    viewModel: FileDetailsViewModel,
-    query: String,
-    scale: Float,
-    scrollIndex: Int
+    viewModel: FileDetailsViewModel, query: String, scale: Float, scrollIndex: Int
 ) {
     val text by viewModel.text.collectAsState()
     val searchedText by viewModel.searchedText.collectAsState()
@@ -78,8 +72,7 @@ private fun BoxScope.DocumentContent(
 
 
 
-    if (text.isEmpty())
-        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    if (text.isEmpty()) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     else {
         LazyColumn(
             state = listState, modifier = Modifier
@@ -115,7 +108,7 @@ private fun BoxScope.DocumentContent(
         ScrollToTopButton(listState = listState, coroutineScope = coroutineScope)
 
         val totalItems by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
-        if (scrollIndex != -1 && totalItems > scrollIndex) {
+        if (scrollIndex in searchedText.size until totalItems) {
             LaunchedEffect(Unit) {
                 listState.animateScrollToItem(searchedText.size - 1 + scrollIndex)
                 viewModel.removeIndexFlag()

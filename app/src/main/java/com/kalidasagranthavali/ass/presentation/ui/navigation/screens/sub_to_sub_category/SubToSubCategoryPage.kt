@@ -16,15 +16,16 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_sub
 fun SubToSubCategoryPage(
     viewModel: SubToSubCategoryViewModel = hiltViewModel(),
     onSubToSubCategoryClick: (HomeSubToSubCategory) -> Unit,
-    onFileClicked: (String, Int, String, Int) -> Unit
+    onFileClicked: (HomeFiles, String, Int) -> Unit
 ) {
     val subToSubCategories by viewModel.subToSubCategoryState.collectAsState()
     val files by viewModel.fileState.collectAsState()
-
+    val searchedData by viewModel.fileData.collectAsState()
+    val query by viewModel.query.collectAsState()
     Column(modifier = Modifier.fillMaxSize()) {
         SearchBar(
             hint = "Search for any sub categories or  files",
-            query = viewModel.query.collectAsState().value,
+            query = query,
             onClearPressed = {
                 viewModel.queryChanged()
             },
@@ -32,7 +33,14 @@ fun SubToSubCategoryPage(
                 viewModel.queryChanged(it)
             }
         )
-        SubToSubCategoryContent(subToSubCategories.data, onSubToSubCategoryClick, files.data, onFileClicked)
+        SubToSubCategoryContent(
+            query,
+            searchedData,
+            subToSubCategories.data,
+            onSubToSubCategoryClick,
+            files.data,
+            onFileClicked
+        )
     }
 }
 

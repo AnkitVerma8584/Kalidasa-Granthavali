@@ -73,12 +73,15 @@ object RepositoryModule {
     fun provideSubToSubCategoryRepository(
         subToSubCategoryApi: SubToSubCategoryApi,
         subToSubCategoryLocalRepository: SubToSubCategoryLocalRepository,
-        fileLocalRepository: FileLocalRepository
+        fileLocalRepository: FileLocalRepository,
+        filesDataApi: FileDataApi,
+        application: Application
     ): SubToSubCategoryRemoteRepository =
         SubToSubCategoryRemoteRepositoryImpl(
             subToSubCategoryApi,
             subToSubCategoryLocalRepository,
-            fileLocalRepository
+            fileLocalRepository,
+            application, filesDataApi
         )
 
     @Provides

@@ -20,13 +20,13 @@ fun FilesList(
     searchedContent: List<FilesData>,
     data: List<HomeFiles>,
     query: String,
-    onFileClicked: (name:String,id:Int, query: String, index: Int) -> Unit
+    onFileClicked: (homeFiles: HomeFiles, query: String, index: Int) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         searchedContent.forEach { fileData ->
             stickyHeader {
                 Text(
-                    text = fileData.file_name, modifier = Modifier
+                    text = fileData.homeFiles.name, modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -35,7 +35,7 @@ fun FilesList(
             }
             items(fileData.file_data) { text ->
                 SearchedText(query = query, content = text, onClick = {
-                    onFileClicked(fileData.file_name,fileData.file_id,query,it)
+                    onFileClicked(fileData.homeFiles, query, it)
                 })
             }
             item {

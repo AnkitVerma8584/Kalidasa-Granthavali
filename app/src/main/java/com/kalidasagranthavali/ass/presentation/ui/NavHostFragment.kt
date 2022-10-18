@@ -3,7 +3,6 @@ package com.kalidasagranthavali.ass.presentation.ui
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -25,7 +24,7 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.support.Su
 
 @Composable
 fun NavHostFragments(
-    navController: NavHostController, paddingValues: PaddingValues, scaffoldState: ScaffoldState
+    navController: NavHostController, paddingValues: PaddingValues
 ) {
     NavHost(
         modifier = Modifier
@@ -35,7 +34,7 @@ fun NavHostFragments(
         startDestination = NavigationFragment.Home.route
     ) {
         composable(route = NavigationFragment.Home.route) {
-            CategoryPage(scaffoldState = scaffoldState) {
+            CategoryPage {
                 NavigationFragment.SubCategory.title = StringUtil.DynamicText(it.name)
                 navController.navigate("sub_category/${it.id}") {
                     popUpTo(navController.graph.findStartDestination().id) {
@@ -69,8 +68,7 @@ fun NavHostFragments(
         }
         composable(
             route = NavigationFragment.SubToSubCategory.route,
-            arguments = listOf(
-                navArgument("cat_id") { type = NavType.IntType },
+            arguments = listOf(navArgument("cat_id") { type = NavType.IntType },
                 navArgument("sub_cat_id") { type = NavType.IntType })
         ) {
             SubToSubCategoryPage(onSubToSubCategoryClick = {
@@ -79,9 +77,9 @@ fun NavHostFragments(
                     launchSingleTop = true
                     restoreState = true
                 }
-            }, onFileClicked = { name, id, query, index ->
-                NavigationFragment.FileDetails.title = StringUtil.DynamicText(name)
-                navController.navigate("file_details?file_id=$id&query=$query&index=$index") {
+            }, onFileClicked = { item, query, index ->
+                NavigationFragment.FileDetails.title = StringUtil.DynamicText(item.name)
+                navController.navigate("file_details?file_id=$id&file_name=${item.name}&file_url=${item.file_url}&query=$query&index=$index") {
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -93,9 +91,9 @@ fun NavHostFragments(
                 navArgument("sub_cat_id") { type = NavType.IntType },
                 navArgument("sub_to_sub_cat_id") { type = NavType.IntType })
         ) {
-            FilePage(onFileClicked = { name, id, query, index ->
-                NavigationFragment.FileDetails.title = StringUtil.DynamicText(name)
-                navController.navigate("file_details?file_id=$id&query=$query&index=$index") {
+            FilePage(onFileClicked = { item, query, index ->
+                NavigationFragment.FileDetails.title = StringUtil.DynamicText(item.name)
+                navController.navigate("file_details?file_id=$id&file_name=${item.name}&file_url=${item.file_url}&query=$query&index=$index") {
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -103,8 +101,7 @@ fun NavHostFragments(
         }
         composable(
             route = NavigationFragment.FileDetails.route,
-            arguments = listOf(
-                navArgument("file_id") { type = NavType.IntType },
+            arguments = listOf(navArgument("file_id") { type = NavType.IntType },
                 navArgument("query") {
                     type = NavType.StringType
                     defaultValue = ""
@@ -112,8 +109,7 @@ fun NavHostFragments(
                 navArgument("index") {
                     type = NavType.IntType
                     defaultValue = -1
-                }
-            )
+                })
         ) {
             FileDetailsPage()
         }

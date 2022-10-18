@@ -25,29 +25,28 @@ import com.rajat.pdfviewer.PdfViewerActivity
 @Composable
 fun LazyItemScope.FileCard(
     item: HomeFiles,
-    onFileClicked: (name: String, id: Int, query: String, index: Int) -> Unit,
+    onFileClicked: (homeFiles: HomeFiles, query: String, index: Int) -> Unit,
     context: Context = LocalContext.current
 ) {
-    ElevatedCard(
-        modifier = Modifier
-            .padding(12.dp)
-            .animateItemPlacement()
-            .fillMaxWidth()
-            .clickable {
-                if (item.isPdf)
-                    context.startActivity(
-                        PdfViewerActivity.launchPdfFromUrl(
-                            context,
-                            item.file_url.getDocumentUrl(),
-                            item.name,
-                            "",
-                            enableDownload = false
-                        )
+    ElevatedCard(modifier = Modifier
+        .padding(12.dp)
+        .animateItemPlacement()
+        .fillMaxWidth()
+        .clickable {
+            if (item.isNotPdf)
+                onFileClicked(item, "", -1)
+            else
+                context.startActivity(
+                    PdfViewerActivity.launchPdfFromUrl(
+                        context,
+                        item.file_url.getDocumentUrl(),
+                        item.name,
+                        "",
+                        enableDownload = false
                     )
-                else
-                    onFileClicked(item.name, item.id, "", -1)
-            }
-    ) {
+                )
+
+        }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()

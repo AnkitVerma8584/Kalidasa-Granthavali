@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -116,8 +115,6 @@ private fun MainPage(
                 }
             }
         }) {
-
-        val scaffoldState = rememberScaffoldState()
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             AppBar(
                 title = currentFragment?.title?.asString()
@@ -128,7 +125,7 @@ private fun MainPage(
                 onLanguageSelected = onLanguageSelected
             )
         }) {
-            NavHostFragments(navController = navController, paddingValues = it, scaffoldState)
+            NavHostFragments(navController = navController, paddingValues = it)
         }
     }
 }
@@ -232,7 +229,6 @@ private fun TopAppBarDropdownMenu(
         }
     }
 }
-
 
 @Composable
 private fun MenuItem(

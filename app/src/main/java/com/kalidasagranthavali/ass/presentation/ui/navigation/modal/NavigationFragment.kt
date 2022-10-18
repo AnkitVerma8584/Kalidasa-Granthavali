@@ -36,15 +36,18 @@ sealed class NavigationFragment(
     )
 
     object SubToSubCategory : NavigationFragment(
-        route = "sub_to_sub_category/{cat_id}/{sub_cat_id}", title = StringUtil.StringResource(R.string.sub_cat)
+        route = "sub_to_sub_category/{cat_id}/{sub_cat_id}",
+        title = StringUtil.StringResource(R.string.sub_cat)
     )
 
     object Files : NavigationFragment(
-        route = "files/{cat_id}/{sub_cat_id}/{sub_to_sub_cat_id}", title = StringUtil.StringResource(R.string.files)
+        route = "files/{cat_id}/{sub_cat_id}/{sub_to_sub_cat_id}",
+        title = StringUtil.StringResource(R.string.files)
     )
 
     object FileDetails : NavigationFragment(
-        route = "file_details?file_id={file_id}&query={query}&index={index}", title = StringUtil.StringResource(R.string.files_details)
+        route = "file_details?file_id={file_id}&file_name={file_name}&file_url={file_url}&query={query}&index={index}",
+        title = StringUtil.StringResource(R.string.files_details)
     )
 
 }

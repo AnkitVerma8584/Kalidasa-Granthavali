@@ -3,8 +3,7 @@ package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_deta
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kalidasagranthavali.ass.domain.modals.HomeFiles
-import com.kalidasagranthavali.ass.domain.repository.local.FileLocalRepository
+import com.kalidasagranthavali.ass.data.Constants.PARAGRAPH_LINE
 import com.kalidasagranthavali.ass.domain.repository.remote.FileDataRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
@@ -25,7 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FileDetailsViewModel @Inject constructor(
     private val filesRepository: FileDataRemoteRepository,
-    private val fileLocalRepository: FileLocalRepository,
     private val savedStateHandle: SavedStateHandle,
     private val languageTranslator: LanguageTranslator
 ) : ViewModel() {
@@ -35,7 +33,7 @@ class FileDetailsViewModel @Inject constructor(
 
     private var index = savedStateHandle.get<Int>("index") ?: -1
 
-    private val _fileDataQuery = MutableStateFlow(savedStateHandle["query"]?:"")
+    private val _fileDataQuery = MutableStateFlow(savedStateHandle["query"] ?: "")
     val fileDataQuery get() = _fileDataQuery.asStateFlow()
 
     private val _text = MutableStateFlow(listOf<String?>())
@@ -44,43 +42,43 @@ class FileDetailsViewModel @Inject constructor(
     init {
         viewModelScope.launch(IO) {
             fetchFile(
-                fileLocalRepository.getFileById(savedStateHandle.get<Int>("file_id") ?: 0)
+                savedStateHandle.get<Int>("file_id") ?: 0,
+                savedStateHandle.get<String>("file_name") ?: "",
+                savedStateHandle.get<String>("file_url") ?: ""
             )
         }
     }
 
-    private suspend fun fetchFile(homeFiles: HomeFiles?) {
-        homeFiles?.let {
-            filesRepository.getFileData(homeFiles).collectLatest { result ->
-                when (result) {
-                    is Resource.Cached -> {
-                        _fileState.update {
-                            it.copy(isLoading = false, error = null)
-                        }
-                        readTextFile(result.result)
+    private suspend fun fetchFile(homeFileId: Int, homeFileName: String, homeFileUrl: String) {
+
+        filesRepository.getFileData(homeFileId, homeFileName, homeFileUrl).collectLatest { result ->
+            when (result) {
+                is Resource.Cached -> {
+                    _fileState.update {
+                        it.copy(isLoading = false, error = null)
                     }
-                    is Resource.Failure -> {
-                        _fileState.update {
-                            it.copy(isLoading = false, error = it.error)
-                        }
-                    }
-                    Resource.Loading -> {
-                        _fileState.update {
-                            it.copy(isLoading = true, error = null)
-                        }
-                    }
-                    is Resource.Success -> {
-                        _fileState.update {
-                            it.copy(isLoading = false, error = null)
-                        }
-                        readTextFile(result.result)
+                    readTextFile(result.result)
+                }
+                is Resource.Failure -> {
+                    _fileState.update {
+                        it.copy(isLoading = false, error = it.error)
                     }
                 }
+                Resource.Loading -> {
+                    _fileState.update {
+                        it.copy(isLoading = true, error = null)
+                    }
+                }
+                is Resource.Success -> {
+                    _fileState.update {
+                        it.copy(isLoading = false, error = null)
+                    }
+                    readTextFile(result.result)
+                }
             }
-        } ?: _fileState.update {
-            it.copy(isLoading = false, error = StringUtil.DynamicText("Unable to load file"))
         }
     }
+
 
     private fun readTextFile(file: File) {
         try {
@@ -91,7 +89,7 @@ class FileDetailsViewModel @Inject constructor(
             var i = 0
             while (br.readLine().also { line = it } != null) {
                 paragraph.append(line)
-                if (i == 2) {
+                if (i == PARAGRAPH_LINE) {
                     text.add(paragraph.toString())
                     paragraph.clear()
                     i = 0

@@ -3,9 +3,12 @@ package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_su
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.domain.repository.remote.SubToSubCategoryRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals.FilesData
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals.FilesState
+import com.kalidasagranthavali.ass.util.print
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -23,13 +26,17 @@ class SubToSubCategoryViewModel @Inject constructor(
 
     private val _subToSubCategoryState = MutableStateFlow(SubToSubCategoryState())
 
+    private val _filesList = MutableStateFlow(emptyList<FilesData>())
+
+
     val subToSubCategoryState = combine(_subToSubCategoryState, query) { state, query ->
         state.copy(
             data = state.data?.let {
                 it.filter { item -> item.name.contains(query, ignoreCase = true) }
             }
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SubToSubCategoryState())
+    }.flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SubToSubCategoryState())
 
     private val _fileState = MutableStateFlow(FilesState())
 
@@ -39,7 +46,23 @@ class SubToSubCategoryViewModel @Inject constructor(
                 it.filter { item -> item.name.contains(query, ignoreCase = true) }
             }
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FilesState())
+    }.flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FilesState())
+
+    val fileData = combine(_filesList, query) { data, query ->
+        if (query.length > 2)
+            data.map { fileData ->
+                fileData.copy(
+                    file_data = fileData.file_data.filter { text ->
+                        text.text?.contains(query, true) ?: false
+                    }
+                )
+            }.filter {
+                it.file_data.isNotEmpty()
+            }
+        else emptyList()
+    }.flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     init {
         viewModelScope.launch(Dispatchers.Default) {
@@ -89,6 +112,7 @@ class SubToSubCategoryViewModel @Inject constructor(
         subToSubCategoryRemoteRepository.getFiles(catId, subCatId).collectLatest {
             when (it) {
                 is Resource.Cached -> {
+                    getFilesData(it.result)
                     _fileState.update { state ->
                         state.copy(isLoading = false, data = it.result)
                     }
@@ -104,9 +128,29 @@ class SubToSubCategoryViewModel @Inject constructor(
                     }
                 }
                 is Resource.Success -> {
+                    getFilesData(it.result)
                     _fileState.update { state ->
                         state.copy(isLoading = false, error = null, data = it.result)
                     }
+                }
+            }
+        }
+    }
+
+    private suspend fun getFilesData(list: List<HomeFiles>) {
+        subToSubCategoryRemoteRepository.getFilesData(list).collectLatest {
+            when (it) {
+                is Resource.Cached -> {
+
+                }
+                is Resource.Failure -> {
+                    it.error.print()
+                }
+                Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    _filesList.value = it.result
                 }
             }
         }

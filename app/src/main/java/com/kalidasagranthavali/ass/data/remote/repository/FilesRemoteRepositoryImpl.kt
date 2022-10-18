@@ -5,20 +5,16 @@ import android.content.Context
 import com.kalidasagranthavali.ass.data.remote.Api.getDocumentExtension
 import com.kalidasagranthavali.ass.data.remote.apis.FileDataApi
 import com.kalidasagranthavali.ass.data.remote.apis.FilesApi
+import com.kalidasagranthavali.ass.data.remote.mapper.FileMapper.getFileToFilesData
 import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.domain.repository.local.FileLocalRepository
 import com.kalidasagranthavali.ass.domain.repository.remote.FilesRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
-import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDocumentText
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals.FilesData
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
-import java.io.BufferedReader
 import java.io.File
-import java.io.FileReader
 import java.io.IOException
 
 class FilesRemoteRepositoryImpl(
@@ -62,7 +58,7 @@ class FilesRemoteRepositoryImpl(
         emit(Resource.Loading)
         try {
             val fileDataList = mutableListOf<FilesData>()
-            for (homeFile in homeFiles) {
+            homeFiles.filter { it.isNotPdf }.forEach { homeFile ->
                 val file = File(application.filesDir, "${homeFile.name}_${homeFile.id}.txt")
 
                 val downloadedFile = if (!file.exists()) {
@@ -88,34 +84,4 @@ class FilesRemoteRepositoryImpl(
             emit(Resource.Failure(StringUtil.DynamicText("No results ${e.message}")))
         }
     }
-
-    private suspend fun HomeFiles.getFileToFilesData(file: File): FilesData? =
-        withContext(IO) {
-            try {
-                val br = BufferedReader(FileReader(file))
-                var line: String?
-                val text = mutableListOf<FileDocumentText>()
-                val paragraph = StringBuilder()
-                var i = 0
-                while (br.readLine().also { line = it } != null) {
-                    paragraph.append(line)
-                    if (i == 2) {
-                        val index = text.size
-                        text.add(FileDocumentText(index, paragraph.toString()))
-                        paragraph.clear()
-                        i = 0
-                    } else paragraph.append("\n")
-                    i++
-                }
-                if (paragraph.isNotBlank()) {
-                    val index = text.size
-                    text.add(FileDocumentText(index, paragraph.toString()))
-                }
-                br.close()
-                FilesData(this@getFileToFilesData.id, this@getFileToFilesData.name, text.toList())
-            } catch (e: Exception) {
-                null
-            }
-        }
-
 }

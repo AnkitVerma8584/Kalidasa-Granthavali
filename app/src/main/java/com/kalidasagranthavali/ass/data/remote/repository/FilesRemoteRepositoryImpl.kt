@@ -12,7 +12,6 @@ import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDocumentText
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals.FilesData
-import com.kalidasagranthavali.ass.util.print
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -65,6 +64,7 @@ class FilesRemoteRepositoryImpl(
             val fileDataList = mutableListOf<FilesData>()
             for (homeFile in homeFiles) {
                 val file = File(application.filesDir, "${homeFile.name}_${homeFile.id}.txt")
+
                 val downloadedFile = if (!file.exists()) {
                     val result = fileDataApi.getFilesData(homeFile.file_url.getDocumentExtension())
                     result.body()?.byteStream()?.use { inputStream ->
@@ -85,7 +85,6 @@ class FilesRemoteRepositoryImpl(
                 emit(Resource.Failure(StringUtil.DynamicText("No results")))
             else emit(Resource.Success(fileDataList.toList()))
         } catch (e: Exception) {
-            e.print()
             emit(Resource.Failure(StringUtil.DynamicText("No results ${e.message}")))
         }
     }

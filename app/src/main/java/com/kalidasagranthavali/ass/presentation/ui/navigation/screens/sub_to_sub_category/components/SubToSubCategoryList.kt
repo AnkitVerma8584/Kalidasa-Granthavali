@@ -24,7 +24,7 @@ fun SubToSubCategoryContent(
     subToSubCategory: List<HomeSubToSubCategory>?,
     onSubToSubCategoryClick: (HomeSubToSubCategory) -> Unit,
     files: List<HomeFiles>?,
-    onFileClicked: (HomeFiles) -> Unit
+    onFileClicked: (String, Int, String, Int) -> Unit
 ) {
     LazyColumn {
         subToSubCategory?.let { list ->

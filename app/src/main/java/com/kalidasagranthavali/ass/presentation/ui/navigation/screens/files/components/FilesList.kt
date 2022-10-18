@@ -20,15 +20,23 @@ fun FilesList(
     searchedContent: List<FilesData>,
     data: List<HomeFiles>,
     query: String,
-    onFileClicked: (HomeFiles) -> Unit
+    onFileClicked: (name:String,id:Int, query: String, index: Int) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         searchedContent.forEach { fileData ->
-            item {
-                Text(text = fileData.file_name, style = MaterialTheme.typography.titleLarge)
+            stickyHeader {
+                Text(
+                    text = fileData.file_name, modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
             items(fileData.file_data) { text ->
-                SearchedText(query = query, content = text, onClick = {})
+                SearchedText(query = query, content = text, onClick = {
+                    onFileClicked(fileData.file_name,fileData.file_id,query,it)
+                })
             }
             item {
                 Spacer(modifier = Modifier.height(15.dp))

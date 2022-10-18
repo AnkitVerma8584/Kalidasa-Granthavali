@@ -25,7 +25,7 @@ import com.rajat.pdfviewer.PdfViewerActivity
 @Composable
 fun LazyItemScope.FileCard(
     item: HomeFiles,
-    onFileClicked: (HomeFiles) -> Unit,
+    onFileClicked: (name: String, id: Int, query: String, index: Int) -> Unit,
     context: Context = LocalContext.current
 ) {
     ElevatedCard(
@@ -45,7 +45,7 @@ fun LazyItemScope.FileCard(
                         )
                     )
                 else
-                    onFileClicked(item)
+                    onFileClicked(item.name, item.id, "", -1)
             }
     ) {
         Column(

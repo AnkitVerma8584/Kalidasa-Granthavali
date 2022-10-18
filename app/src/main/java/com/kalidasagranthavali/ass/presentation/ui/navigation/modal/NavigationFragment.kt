@@ -44,7 +44,7 @@ sealed class NavigationFragment(
     )
 
     object FileDetails : NavigationFragment(
-        route = "file_details/{file_id}", title = StringUtil.StringResource(R.string.files_details)
+        route = "file_details?file_id={file_id}&query={query}&index={index}", title = StringUtil.StringResource(R.string.files_details)
     )
 
 }

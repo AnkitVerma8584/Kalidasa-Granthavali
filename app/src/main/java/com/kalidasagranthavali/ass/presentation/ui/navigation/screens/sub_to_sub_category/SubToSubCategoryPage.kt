@@ -16,7 +16,7 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_sub
 fun SubToSubCategoryPage(
     viewModel: SubToSubCategoryViewModel = hiltViewModel(),
     onSubToSubCategoryClick: (HomeSubToSubCategory) -> Unit,
-    onFileClicked: (HomeFiles) -> Unit
+    onFileClicked: (String, Int, String, Int) -> Unit
 ) {
     val subToSubCategories by viewModel.subToSubCategoryState.collectAsState()
     val files by viewModel.fileState.collectAsState()

@@ -9,14 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.SearchBar
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.components.FilesList
 
 @Composable
 fun FilePage(
     viewModel: FilesViewModel = hiltViewModel(),
-    onFileClicked: (HomeFiles) -> Unit
+    onFileClicked: (name: String, id: Int, query: String, index: Int) -> Unit
 ) {
     val files by viewModel.fileState.collectAsState()
     val searchedData by viewModel.fileData.collectAsState()
@@ -30,10 +29,16 @@ fun FilePage(
             },
             onSearchQueryChanged = {
                 viewModel.queryChanged(it)
-            }
+            },
+            minimumLetter = 3
         )
         files.data?.let {
-            FilesList(searchedContent = searchedData, data = it,query, onFileClicked = onFileClicked)
+            FilesList(
+                searchedContent = searchedData,
+                data = it,
+                query,
+                onFileClicked = onFileClicked
+            )
         } ?: CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }

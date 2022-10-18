@@ -1,58 +1,40 @@
 package com.kalidasagranthavali.ass.util.translation
 
+import android.content.SharedPreferences
 import com.google.mlkit.nl.languageid.LanguageIdentifier
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.Translator
+import com.google.mlkit.nl.translate.TranslatorOptions
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class LanguageTranslator(
     private val languageIdentifier: LanguageIdentifier
 ) {
+    suspend fun getLanguageCode(text: String): String? =
+        languageIdentifier.identifyLanguage(text).await()
 
-    suspend fun String.getLanguageCode(): String? {
-        val l = languageIdentifier.identifyLanguage(this)
-        return suspendCoroutine { continuation ->
-            l.addOnSuccessListener { code ->
-                if (code == "und") {
-                    continuation.resume(null)
-                } else {
-                    continuation.resume(code)
-                }
+    private suspend fun makeModelText(text: String, from: String, to: String): String {
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(from)
+            .setTargetLanguage(to)
+            .build()
+        val translator = Translation.getClient(options)
+        return translator.downloadModel(text)
+    }
+
+    private suspend fun Translator.downloadModel(text: String): String = suspendCoroutine { cont ->
+        this.downloadModelIfNeeded().addOnSuccessListener {
+            this.translate(text).addOnSuccessListener {
+                cont.resume(it)
             }.addOnFailureListener {
-                continuation.resume(null)
+                cont.resumeWithException(it)
             }
+        }.addOnFailureListener {
+            cont.resumeWithException(it)
         }
     }
-
-    /*  suspend fun String.translateText():String{
-          val options = TranslatorOptions.Builder()
-              .setSourceLanguage(TranslateLanguage.ENGLISH)
-              .setTargetLanguage(TranslateLanguage.HINDI)
-              .build()
-
-          val englishHindiTranslator = Translation.getClient(options)
-
-          val conditions = DownloadConditions.Builder()
-              .build()
-        //  englishHindiTranslator.downloadModelIfNeeded(conditions).
-          *//* .addOnSuccessListener {
-             // Model downloaded successfully. Okay to start translating.
-             // (Set a flag, unhide the translation UI, etc.)
-             englishGermanTranslator.translate(this)
-                 .addOnSuccessListener { translatedText ->
-                     // Translation successful.
-                     //TODO send translatedText
-                 }
-                 .addOnFailureListener { exception ->
-                     // Error.
-                     // ...
-                 }
-         }
-         .addOnFailureListener { exception ->
-             // Model couldn’t be downloaded or other internal error.
-             // ...
-         }*//*
-    }
-*/
-
 
 }

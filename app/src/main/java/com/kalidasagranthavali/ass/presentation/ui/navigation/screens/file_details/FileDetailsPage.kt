@@ -18,18 +18,14 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.c
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components.DocumentText
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components.ScrollToTopButton
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components.SearchedText
-import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDocumentText
 import kotlinx.coroutines.launch
 
 @Composable
 fun FileDetailsPage(
     viewModel: FileDetailsViewModel = hiltViewModel()
 ) {
-    val text by viewModel.text.collectAsState()
     val state by viewModel.fileState.collectAsState()
     val query by viewModel.fileDataQuery.collectAsState()
-    val searchedText by viewModel.searchedText.collectAsState()
-
     var scale by remember { mutableStateOf(16f) }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -37,7 +33,8 @@ fun FileDetailsPage(
             query = query,
             onSearchQueryChanged = { viewModel.updateQuery(it) },
             onClearPressed = { viewModel.updateQuery() },
-            hint = "Search for any text..."
+            hint = "Search for any text...",
+            minimumLetter = 3
         )
         Box(
             modifier = Modifier
@@ -56,10 +53,10 @@ fun FileDetailsPage(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } ?: DocumentContent(
-                searchedText = searchedText,
-                text = text,
+                viewModel = viewModel,
                 scale = scale,
-                query = query
+                query = query,
+                scrollIndex = viewModel.getScrollIndex()
             )
         }
     }
@@ -67,13 +64,20 @@ fun FileDetailsPage(
 
 @Composable
 private fun BoxScope.DocumentContent(
-    searchedText: List<FileDocumentText>,
-    text: List<String?>,
+    viewModel: FileDetailsViewModel,
     query: String,
-    scale: Float
+    scale: Float,
+    scrollIndex: Int
 ) {
+    val text by viewModel.text.collectAsState()
+    val searchedText by viewModel.searchedText.collectAsState()
+
+
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+
+
     if (text.isEmpty())
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     else {
@@ -109,5 +113,14 @@ private fun BoxScope.DocumentContent(
             }
         }
         ScrollToTopButton(listState = listState, coroutineScope = coroutineScope)
+
+        val totalItems by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
+        if (scrollIndex != -1 && totalItems > scrollIndex) {
+            LaunchedEffect(Unit) {
+                listState.animateScrollToItem(searchedText.size - 1 + scrollIndex)
+                viewModel.removeIndexFlag()
+            }
+        }
+
     }
 }

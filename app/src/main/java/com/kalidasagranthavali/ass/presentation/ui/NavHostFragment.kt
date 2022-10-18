@@ -79,9 +79,9 @@ fun NavHostFragments(
                     launchSingleTop = true
                     restoreState = true
                 }
-            }, onFileClicked = {
-                NavigationFragment.FileDetails.title = StringUtil.DynamicText(it.name)
-                navController.navigate("file_details/${it.id}") {
+            }, onFileClicked = { name, id, query, index ->
+                NavigationFragment.FileDetails.title = StringUtil.DynamicText(name)
+                navController.navigate("file_details?file_id=$id&query=$query&index=$index") {
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -93,9 +93,9 @@ fun NavHostFragments(
                 navArgument("sub_cat_id") { type = NavType.IntType },
                 navArgument("sub_to_sub_cat_id") { type = NavType.IntType })
         ) {
-            FilePage(onFileClicked = {
-                NavigationFragment.FileDetails.title = StringUtil.DynamicText(it.name)
-                navController.navigate("file_details/${it.id}") {
+            FilePage(onFileClicked = { name, id, query, index ->
+                NavigationFragment.FileDetails.title = StringUtil.DynamicText(name)
+                navController.navigate("file_details?file_id=$id&query=$query&index=$index") {
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -103,7 +103,17 @@ fun NavHostFragments(
         }
         composable(
             route = NavigationFragment.FileDetails.route,
-            arguments = listOf(navArgument("file_id") { type = NavType.IntType })
+            arguments = listOf(
+                navArgument("file_id") { type = NavType.IntType },
+                navArgument("query") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("index") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
         ) {
             FileDetailsPage()
         }

@@ -2,7 +2,7 @@ package com.kalidasagranthavali.ass.util
 
 import android.util.Log
 
-fun Any?.print(tag: String = "TAG") {
+fun Any?.print(tag: String = "TAGS") {
     Log.e(tag, this.toString())
 }
 

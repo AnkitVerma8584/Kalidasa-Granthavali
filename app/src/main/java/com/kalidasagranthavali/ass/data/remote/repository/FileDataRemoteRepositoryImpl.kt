@@ -22,10 +22,10 @@ class FileDataRemoteRepositoryImpl(
             if (homeFiles.file_url.isInValidFile())
                 emit(Resource.Failure(StringUtil.DynamicText("Invalid file type")))
             val file = File(application.filesDir, "${homeFiles.name}_${homeFiles.id}.txt")
+
             if (file.exists()) {
                 emit(Resource.Cached(file))
             }
-
             val result = fileDataApi.getFilesData(homeFiles.file_url.getDocumentExtension())
             emit(result.body()?.byteStream()?.use { inputStream ->
                 application.openFileOutput(file.name, Context.MODE_PRIVATE).use { outputStream ->

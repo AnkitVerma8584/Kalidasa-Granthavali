@@ -10,6 +10,7 @@ import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDataState
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDocumentText
+import com.kalidasagranthavali.ass.util.translation.LanguageTranslator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
@@ -25,13 +26,16 @@ import javax.inject.Inject
 class FileDetailsViewModel @Inject constructor(
     private val filesRepository: FileDataRemoteRepository,
     private val fileLocalRepository: FileLocalRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val languageTranslator: LanguageTranslator
 ) : ViewModel() {
 
     private val _fileState = MutableStateFlow(FileDataState())
     val fileState = _fileState.asStateFlow()
 
-    private val _fileDataQuery = MutableStateFlow("")
+    private var index = savedStateHandle.get<Int>("index") ?: -1
+
+    private val _fileDataQuery = MutableStateFlow(savedStateHandle["query"]?:"")
     val fileDataQuery get() = _fileDataQuery.asStateFlow()
 
     private val _text = MutableStateFlow(listOf<String?>())
@@ -118,5 +122,13 @@ class FileDetailsViewModel @Inject constructor(
 
     fun updateQuery(newQuery: String = "") {
         _fileDataQuery.value = newQuery
+    }
+
+    suspend fun getLanguageCode(text: String) = languageTranslator.getLanguageCode(text)
+
+    fun getScrollIndex(): Int = index
+
+    fun removeIndexFlag() {
+        index = -1
     }
 }

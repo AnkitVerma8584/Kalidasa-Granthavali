@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,7 +38,8 @@ fun SearchBar(
     hint: String = "",
     query: String,
     onClearPressed: () -> Unit = {},
-    onSearchQueryChanged: (String) -> Unit = {}
+    onSearchQueryChanged: (String) -> Unit = {},
+    minimumLetter: Int = 0,
 ) {
     val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -109,14 +111,23 @@ fun SearchBar(
             keyboardActions = KeyboardActions(onSearch = {
                 keyboardController?.hide()
                 focusManager.clearFocus()
-            })
+            }),
+            supportingText = {
+                if (query.length in 1 until minimumLetter)
+                    Text(
+                        text = "Minimum $minimumLetter characters required to search",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+            }
         )
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun SearchViewPreview() {
     SearchBar(query = "")

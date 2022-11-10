@@ -9,8 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kalidasagranthavali.ass.data.Constants.MINIMUM_SEARCH_CHAR
 import com.kalidasagranthavali.ass.domain.modals.HomeFiles
-import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.SearchBar
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.common.SearchBar
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.components.FilesList
 
 @Composable
@@ -26,13 +27,8 @@ fun FilePage(
         SearchBar(
             hint = "Search for any files",
             query = query,
-            onClearPressed = {
-                viewModel.queryChanged()
-            },
-            onSearchQueryChanged = {
-                viewModel.queryChanged(it)
-            },
-            minimumLetter = 3
+            onSearchQueryChanged = viewModel::queryChanged,
+            minimumLetter = MINIMUM_SEARCH_CHAR
         )
         files.data?.let {
             FilesList(

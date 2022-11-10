@@ -53,7 +53,7 @@ fun SearchedText(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 8.dp)
                 .clickable { onClick(content.index) },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
@@ -62,7 +62,7 @@ fun SearchedText(
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(vertical = 8.dp)
         )
     }
 }

@@ -9,7 +9,7 @@ import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDataState
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.modals.FileDocumentText
-import com.kalidasagranthavali.ass.util.translation.LanguageTranslator
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
@@ -24,8 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FileDetailsViewModel @Inject constructor(
     private val filesRepository: FileDataRemoteRepository,
-    private val savedStateHandle: SavedStateHandle,
-    private val languageTranslator: LanguageTranslator
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _fileState = MutableStateFlow(FileDataState())
@@ -122,7 +121,7 @@ class FileDetailsViewModel @Inject constructor(
         _fileDataQuery.value = newQuery
     }
 
-    suspend fun getLanguageCode(text: String) = languageTranslator.getLanguageCode(text)
+    //   suspend fun getLanguageCode(text: String) = languageTranslator.getLanguageCode(text)
 
     fun getScrollIndex(): Int = index
 

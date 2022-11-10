@@ -30,27 +30,25 @@ fun SupportPage() {
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = stringResource(id = R.string.support),
-            style = MaterialTheme.typography.displaySmall,
+            style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             modifier = Modifier.fillMaxWidth(0.9f),
-            text = stringResource(id = R.string.sub_heading),
+            text = stringResource(id = R.string.support_sub_heading),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(50.dp))
-        Column {
-            Details(icon = R.drawable.ic_person, details = R.string.name)
-            Details(icon = R.drawable.ic_contact, details = R.string.phone) {
 
-            }
-            Details(icon = R.drawable.ic_mail, details = R.string.email) {
+        Details(icon = R.drawable.ic_person, details = R.string.support_name)
+        Details(icon = R.drawable.ic_contact, details = R.string.support_phone) {
 
-            }
-            Details(icon = R.drawable.ic_location, details = R.string.address) {
+        }
+        Details(icon = R.drawable.ic_mail, details = R.string.support_email) {
 
-            }
+        }
+        Details(icon = R.drawable.ic_location, details = R.string.support_location) {
 
         }
     }
@@ -63,7 +61,7 @@ private fun Details(
     onClick: () -> Unit = {}
 ) {
     Row(modifier = Modifier
-        .wrapContentWidth()
+        .fillMaxWidth(0.8f)
         .clickable { onClick() }) {
         Icon(
             painter = painterResource(id = icon),

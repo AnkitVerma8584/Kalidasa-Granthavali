@@ -36,7 +36,11 @@ class SubToSubCategoryViewModel @Inject constructor(
             }
         )
     }.flowOn(Dispatchers.Default)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SubToSubCategoryState())
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+            SubToSubCategoryState()
+        )
 
     private val _fileState = MutableStateFlow(FilesState())
 
@@ -47,7 +51,11 @@ class SubToSubCategoryViewModel @Inject constructor(
             }
         )
     }.flowOn(Dispatchers.Default)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FilesState())
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+            FilesState()
+        )
 
     val fileData = combine(_filesList, query) { data, query ->
         if (query.length > 2)
@@ -62,7 +70,11 @@ class SubToSubCategoryViewModel @Inject constructor(
             }
         else emptyList()
     }.flowOn(Dispatchers.Default)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+            emptyList()
+        )
 
     init {
         viewModelScope.launch(Dispatchers.Default) {

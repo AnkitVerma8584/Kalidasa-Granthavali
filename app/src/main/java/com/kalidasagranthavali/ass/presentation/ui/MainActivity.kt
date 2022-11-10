@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     MainPage(onLanguageSelected = {
-                        LocaleHelper.setLocale(this, it)
+                        LocaleHelper.setLocale(this@MainActivity, it)
                         recreate()
                     })
                 }
@@ -67,8 +67,8 @@ private fun MainPage(
         NavigationFragment.Contact,
         NavigationFragment.Support,
         NavigationFragment.SubCategory,
-        NavigationFragment.SubToSubCategory,
         NavigationFragment.Files,
+        NavigationFragment.SubToSubCategory,
         NavigationFragment.FileDetails
     ), menuScreens: List<NavigationFragment> = listOf(
         NavigationFragment.Home,
@@ -88,7 +88,6 @@ private fun MainPage(
             allScreens.find { it.route == navController.currentBackStackEntry?.destination?.route }
         }
     }
-
     ModalNavigationDrawer(drawerState = drawerState,
         gesturesEnabled = currentFragment?.icon != null,
         drawerContent = {
@@ -240,7 +239,5 @@ private fun MenuItem(
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
-    }, onClick = {
-        onMenuClick()
-    })
+    }, onClick = { onMenuClick() })
 }

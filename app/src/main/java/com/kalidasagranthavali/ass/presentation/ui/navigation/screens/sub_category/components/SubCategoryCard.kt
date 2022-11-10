@@ -27,7 +27,7 @@ fun LazyItemScope.SubCategoryCard(
     onClick: (HomeSubCategory) -> Unit
 ) {
     ElevatedCard(modifier = Modifier
-        .padding(5.dp)
+        .padding(horizontal = 12.dp, vertical = 8.dp)
         .animateItemPlacement()
         .fillMaxWidth()
         .clickable { onClick(data) }) {
@@ -57,16 +57,17 @@ fun LazyItemScope.SubCategoryCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-                Text(
-                    text = data.description,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Normal
-                )
+                if (data.description.isNotBlank())
+                    Text(
+                        text = data.description,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Normal
+                    )
             }
         }
 

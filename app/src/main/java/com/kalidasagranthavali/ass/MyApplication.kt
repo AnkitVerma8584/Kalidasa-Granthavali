@@ -7,6 +7,7 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class MyApplication : Application() {
+
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(LocaleHelper.onAttach(newBase!!))
     }

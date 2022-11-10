@@ -1,12 +1,11 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -32,15 +31,13 @@ fun BoxScope.ScrollToTopButton(
     val shouldShowButton = remember {
         derivedStateOf { listState.firstVisibleItemIndex > 0 }
     }
-
-    androidx.compose.animation.AnimatedVisibility(
+    AnimatedVisibility(
         modifier = Modifier
             .align(Alignment.BottomEnd)
-            .padding(5.dp),
+            .padding(16.dp),
         visible = shouldShowButton.value,
-        enter = slideInVertically() + fadeIn(),
-        exit = slideOutVertically() + fadeOut(),
-
+        enter = slideInVertically(animationSpec = tween(400), initialOffsetY = { it }) + fadeIn(),
+        exit = fadeOut(),
         content = {
             IconButton(
                 onClick = {
@@ -48,7 +45,8 @@ fun BoxScope.ScrollToTopButton(
                         listState.animateScrollToItem(index = 0)
                     }
                 }, modifier = Modifier
-                    .padding(16.dp)
+                    .size(54.dp)
+                    .padding(8.dp)
                     .clip(CircleShape)
                     .background(color = MaterialTheme.colorScheme.primary)
             ) {

@@ -29,7 +29,7 @@ fun FilesList(
                     text = fileData.homeFiles.name, modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(start = 16.dp, top = 16.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -48,7 +48,7 @@ fun FilesList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp),
+                    .padding(start = 16.dp, top = 16.dp),
                 style = MaterialTheme.typography.titleMedium
             )
         }

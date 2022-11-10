@@ -14,7 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.SearchBar
+import com.kalidasagranthavali.ass.data.Constants.MINIMUM_SEARCH_CHAR
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.common.SearchBar
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components.DocumentText
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components.ScrollToTopButton
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components.SearchedText
@@ -29,11 +30,11 @@ fun FileDetailsPage(
     var scale by remember { mutableStateOf(16f) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchBar(query = query,
-            onSearchQueryChanged = { viewModel.updateQuery(it) },
-            onClearPressed = { viewModel.updateQuery() },
+        SearchBar(
+            query = query,
+            onSearchQueryChanged = viewModel::updateQuery,
             hint = "Search for any text...",
-            minimumLetter = 3
+            minimumLetter = MINIMUM_SEARCH_CHAR
         )
         Box(modifier = Modifier
             .fillMaxSize()
@@ -66,18 +67,16 @@ private fun BoxScope.DocumentContent(
     val text by viewModel.text.collectAsState()
     val searchedText by viewModel.searchedText.collectAsState()
 
-
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-
-
-    if (text.isEmpty()) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    if (text.isEmpty())
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     else {
         LazyColumn(
-            state = listState, modifier = Modifier
-                .fillMaxSize()
-                .padding(5.dp)
+            contentPadding = PaddingValues(16.dp),
+            state = listState,
+            modifier = Modifier.fillMaxSize()
         ) {
             if (query.length > 2) {
                 item {
@@ -92,12 +91,9 @@ private fun BoxScope.DocumentContent(
                     items(searchedText) { content ->
                         SearchedText(query = query, content = content, onClick = {
                             coroutineScope.launch {
-                                listState.animateScrollToItem(searchedText.size - 1 + it)
+                                listState.animateScrollToItem(searchedText.size + it)
                             }
                         })
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(50.dp))
                     }
                 }
             }
@@ -105,15 +101,15 @@ private fun BoxScope.DocumentContent(
                 DocumentText(query = query, text = item, scale = scale)
             }
         }
+
         ScrollToTopButton(listState = listState, coroutineScope = coroutineScope)
 
         val totalItems by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
-        if (scrollIndex in searchedText.size until totalItems) {
+        if (text.isNotEmpty() && searchedText.isNotEmpty() && (searchedText.size + scrollIndex) < totalItems && scrollIndex != -1) {
             LaunchedEffect(Unit) {
-                listState.animateScrollToItem(searchedText.size - 1 + scrollIndex)
+                listState.animateScrollToItem(searchedText.size + scrollIndex)
                 viewModel.removeIndexFlag()
             }
         }
-
     }
 }

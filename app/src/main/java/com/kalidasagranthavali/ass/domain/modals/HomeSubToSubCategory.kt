@@ -6,4 +6,6 @@ data class HomeSubToSubCategory(
     val sub_cat_id: Int,
     val name: String,
     val description: String
-)
+) {
+    val uniqueKey get():String = "sub_to_sub_category_$id"
+}

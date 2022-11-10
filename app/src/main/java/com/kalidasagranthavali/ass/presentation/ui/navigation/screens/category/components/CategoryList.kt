@@ -37,7 +37,7 @@ fun ColumnScope.CategoryList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp),
+                    .padding(start = 16.dp, top = 16.dp),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -47,9 +47,7 @@ fun ColumnScope.CategoryList(
                     Text(
                         text = "No results found!",
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(
-                            horizontal = 16.dp
-                        )
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 }
             else

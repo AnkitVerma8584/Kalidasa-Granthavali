@@ -1,4 +1,4 @@
-package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components
+package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -37,7 +37,7 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     hint: String = "",
     query: String,
-    onClearPressed: () -> Unit = {},
+    onSearchPressed: () -> Unit = {},
     onSearchQueryChanged: (String) -> Unit = {},
     minimumLetter: Int = 0,
 ) {
@@ -48,7 +48,7 @@ fun SearchBar(
     val trailingIconView = @Composable {
         IconButton(
             onClick = {
-                onClearPressed()
+                onSearchQueryChanged("")
             },
         ) {
             Icon(
@@ -108,14 +108,16 @@ fun SearchBar(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Search
             ),
-            keyboardActions = KeyboardActions(onSearch = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    onSearchPressed()
+                }),
             supportingText = {
                 if (query.length in 1 until minimumLetter)
                     Text(
-                        text = "Minimum $minimumLetter characters required to search",
+                        text = "Minimum $minimumLetter characters required to search in files.",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.error

@@ -4,7 +4,7 @@ import android.content.Context
 import com.kalidasagranthavali.ass.data.local.UserDataStore
 import java.util.*
 
-object LocaleHelper {
+class LocaleModule {
 
     internal fun onAttach(context: Context): Context {
         val lang = getLanguage(context)

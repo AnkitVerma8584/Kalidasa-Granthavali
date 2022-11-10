@@ -25,7 +25,7 @@ fun LazyItemScope.CategoryItem(
     onClick: (HomeCategory) -> Unit
 ) {
     ElevatedCard(modifier = Modifier
-        .padding(5.dp)
+        .padding(horizontal = 12.dp, vertical = 8.dp)
         .animateItemPlacement()
         .fillMaxWidth()
         .clickable { onClick(data) }) {

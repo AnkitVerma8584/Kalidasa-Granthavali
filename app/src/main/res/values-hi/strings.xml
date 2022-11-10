@@ -24,6 +24,13 @@
     <string name="phone">+91 4861561566</string>
     <string name="address">रोशन मार्ग, मुंबई: 400067</string>
 
+    <!--Support-->
+    <string name="support_sub_heading">For any technical support or queries :</string>
+    <string name="support_name">Aishwarya Software Solutions</string>
+    <string name="support_email">aishwaryasoftware2022@gmail.com</string>
+    <string name="support_phone">+91 7337763918</string>
+    <string name="support_location">Bengaluru</string>
+
     <!-- About us -->
     <string name="about_us">यह एक उदारहण टेक्स्ट है। बस एक प्रश्न खोजें और देखें कि क्या क्वेरी प्रदर्शित होती है। फिर क्वेरी सही है और इसलिए यह उदाहरण है।</string>
 </resources>

@@ -9,5 +9,6 @@ data class HomeFiles(
     val description: String,
     val file_url: String
 ) {
+    val uniqueKey get():String =  "file_$id"
     val isNotPdf get():Boolean = !file_url.endsWith(".pdf")
 }

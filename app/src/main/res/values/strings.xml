@@ -24,6 +24,11 @@
 
     <!--Sub Category-->
     <string name="sub_cat" translatable="false">Sub Categories</string>
+    <string name="sub_cat_search" translatable="false">Search for any category</string>
+
+    <!--Sub to sub Category-->
+    <string name="sub_to_sub_cat" translatable="false">Sub to sub Categories</string>
+    <string name="sub_to_sub_cat_search" translatable="false">Search for any category</string>
 
     <!--Files-->
     <string name="files" translatable="false">Files</string>
@@ -34,12 +39,19 @@
 
     <!--Contact and support-->
     <string name="sub_heading">In case of any difficulty or queries please contact us on the details below :</string>
-    <string name="name">Rahul Jain</string>
-    <string name="email">somerandommail@gmail.com</string>
-    <string name="phone">+91 4861561566</string>
-    <string name="address">Roshan Marg, Mumbai: 400067</string>
+    <string name="name">Sri Vyasatirtha Samshodhana Pratishthana (R.)</string>
+  <!--  <string name="email">somerandommail@gmail.com</string>-->
+    <string name="phone">+91 9448394312</string>
+    <string name="address">No.1226, 3rd Main, 2nd Cross Road, Krishnamurthy Puram, Mysore - 570004</string>
+
+    <!--Support-->
+    <string name="support_sub_heading">For any technical support or queries :</string>
+    <string name="support_name">Aishwarya Software Solutions</string>
+    <string name="support_email">aishwaryasoftware2022@gmail.com</string>
+    <string name="support_phone">+91 7337763918</string>
+    <string name="support_location">Bengaluru</string>
 
     <!-- About us -->
-    <string name="about_us">This is an example text. Just find a query and see if query is displayed. Then query is correct and so it the example.</string>
+    <string name="about_us">Kalidasa Granthavali android application is designed to make all the kalidasa writings available on a single platform in the form of E-book. Users can select the category, related to that all the book titles will display. On clicking the title users are able to navigate to the particular files of that book. Content in the app available in different languages. This mobile application is very useful for the users who are at starting level in the sanskrit language and also who are interested in poetry.</string>
 
 </resources>

@@ -30,7 +30,7 @@ fun ContactPage() {
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = stringResource(id = R.string.contact_us),
-            style = MaterialTheme.typography.displaySmall,
+            style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -40,17 +40,11 @@ fun ContactPage() {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(50.dp))
-        Column {
-            Details(icon = R.drawable.ic_person, details = R.string.name)
-            Details(icon = R.drawable.ic_contact, details = R.string.phone) {
+        Details(icon = R.drawable.ic_person, details = R.string.name)
+        Details(icon = R.drawable.ic_contact, details = R.string.phone) {
 
-            }
-            Details(icon = R.drawable.ic_mail, details = R.string.email) {
-
-            }
-            Details(icon = R.drawable.ic_location, details = R.string.address) {
-
-            }
+        }
+        Details(icon = R.drawable.ic_location, details = R.string.address) {
 
         }
     }
@@ -63,7 +57,7 @@ private fun Details(
     onClick: () -> Unit = {}
 ) {
     Row(modifier = Modifier
-        .wrapContentWidth()
+        .fillMaxWidth(0.8f)
         .clickable { onClick() }) {
         Icon(
             painter = painterResource(id = icon),

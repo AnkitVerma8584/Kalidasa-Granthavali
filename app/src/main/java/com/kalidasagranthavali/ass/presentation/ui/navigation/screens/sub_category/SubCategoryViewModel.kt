@@ -26,10 +26,14 @@ class SubCategoryViewModel @Inject constructor(
     val subCategoryState = combine(_state, subCategoryQuery) { state, query ->
         state.copy(
             data = state.data?.let {
-                it.filter { item -> item.name.contains(query,ignoreCase = true) }
+                it.filter { item -> item.name.contains(query, ignoreCase = true) }
             }
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SubCategoryState())
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+        SubCategoryState()
+    )
 
     init {
         viewModelScope.launch(Dispatchers.Default) {

@@ -27,7 +27,7 @@ fun SubCategoryList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp),
+                    .padding(start = 16.dp, top = 16.dp),
                 style = MaterialTheme.typography.titleMedium
             )
         }

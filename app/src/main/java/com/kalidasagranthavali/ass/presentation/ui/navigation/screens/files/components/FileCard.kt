@@ -29,7 +29,7 @@ fun LazyItemScope.FileCard(
     context: Context = LocalContext.current
 ) {
     ElevatedCard(modifier = Modifier
-        .padding(12.dp)
+        .padding(horizontal = 12.dp, vertical = 8.dp)
         .animateItemPlacement()
         .fillMaxWidth()
         .clickable {
@@ -38,14 +38,10 @@ fun LazyItemScope.FileCard(
             else
                 context.startActivity(
                     PdfViewerActivity.launchPdfFromUrl(
-                        context,
-                        item.file_url.getDocumentUrl(),
-                        item.name,
-                        "",
-                        enableDownload = false
+                        context, item.file_url.getDocumentUrl(),
+                        item.name, "", enableDownload = false
                     )
                 )
-
         }) {
         Column(
             modifier = Modifier
@@ -60,13 +56,15 @@ fun LazyItemScope.FileCard(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
-            Text(
-                text = item.description,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Normal
-            )
+            if (item.description.isNotBlank())
+                Text(
+                    text = item.description,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(horizontal = 6.dp)
+                )
         }
     }
 

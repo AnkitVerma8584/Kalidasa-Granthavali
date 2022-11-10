@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kalidasagranthavali.ass.domain.modals.HomeSubCategory
-import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.SearchBar
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.common.SearchBar
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_category.components.SubCategoryList
 
 @Composable
@@ -24,12 +24,7 @@ fun SubCategoryPage(
         SearchBar(
             hint = "Search for any sub-category",
             query = query,
-            onClearPressed = {
-                viewModel.queryChanged()
-            },
-            onSearchQueryChanged = {
-                viewModel.queryChanged(it)
-            }
+            onSearchQueryChanged = viewModel::queryChanged
         )
         subCategories.data?.let {
             SubCategoryList(

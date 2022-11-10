@@ -23,6 +23,13 @@
     <string name="phone">+91 4861561566</string>
     <string name="address">रोशन मार्ग, मुम्बई : 400067</string>
 
+    <!--Support-->
+    <string name="support_sub_heading">For any technical support or queries :</string>
+    <string name="support_name">Aishwarya Software Solutions</string>
+    <string name="support_email">aishwaryasoftware2022@gmail.com</string>
+    <string name="support_phone">+91 7337763918</string>
+    <string name="support_location">Bengaluru</string>
+
     <!-- About us -->
     <string name="about_us">एषः उदाहरणपाठः । केवलं एकं query अन्विष्य पश्यन्तु यत् query प्रदर्शिता अस्ति वा। तदा प्रश्नः सम्यक् अस्ति तथा च इदं उदाहरणम्।</string>
 </resources>

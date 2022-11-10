@@ -14,6 +14,7 @@ import com.kalidasagranthavali.ass.domain.repository.remote.SubToSubCategoryRemo
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.domain.utils.StringUtil
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals.FilesData
+import com.kalidasagranthavali.ass.util.print
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
@@ -65,14 +66,12 @@ class SubToSubCategoryRemoteRepositoryImpl(
 
     override fun getFiles(catId: Int, subCategoryId: Int): Flow<Resource<List<HomeFiles>>> = flow {
         emit(Resource.Loading)
-        if (fileLocalRepository.getFilesCount(catId, subCategoryId) > 0) emit(
-            Resource.Success(
-                fileLocalRepository.getFiles(catId, subCategoryId)
-            )
-        )
+        if (fileLocalRepository.getFilesCount(catId, subCategoryId) > 0)
+            emit(Resource.Success(fileLocalRepository.getFiles(catId, subCategoryId)))
         emit(
             try {
                 val result = subToSubCategoryApi.getFiles(catId, subCategoryId)
+                result.print()
                 if (result.isSuccessful && result.body() != null) {
                     if (result.body()!!.success) {
                         val data = result.body()?.data ?: emptyList()

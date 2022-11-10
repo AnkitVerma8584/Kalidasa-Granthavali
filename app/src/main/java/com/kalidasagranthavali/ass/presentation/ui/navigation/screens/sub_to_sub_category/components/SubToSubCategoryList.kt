@@ -11,9 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kalidasagranthavali.ass.domain.modals.HomeFiles
 import com.kalidasagranthavali.ass.domain.modals.HomeSubToSubCategory
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.common.Loading
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.components.SearchedText
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.components.FileCard
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.modals.FilesData
@@ -35,7 +37,8 @@ fun SubToSubCategoryContent(
                     text = fileData.homeFiles.name, modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(12.dp),
+                    fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -48,70 +51,29 @@ fun SubToSubCategoryContent(
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }
-
         subToSubCategory?.let { list ->
-            stickyHeader {
-                Text(
-                    text = "Sub-to-sub-category",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+            items(items = list, key = { it.uniqueKey }) { sub_category ->
+                SubToSubCategoryCard(data = sub_category, onClick = onSubToSubCategoryClick)
             }
-            if (list.isEmpty())
-                item {
-                    Text(
-                        text = "No sub-to-sub-categories found!",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(
-                            horizontal = 16.dp
-                        )
-                    )
-                }
-            else
-                items(items = list, key = { it.id }) { sub_category ->
-                    SubToSubCategoryCard(data = sub_category, onClick = onSubToSubCategoryClick)
-                }
-        } ?: item {
-            Loading()
-        }
+        } ?: item { Loading() }
+
         files?.let { list ->
-            stickyHeader {
-                Text(
-                    text = "Files",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-            if (list.isEmpty())
-                item {
+            if (list.isNotEmpty()) {
+                stickyHeader {
                     Text(
-                        text = "No files found!",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(
-                            horizontal = 16.dp
-                        )
+                        text = "Files",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(start = 16.dp, top = 16.dp),
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
-            else
-                items(list, key = { it.name }) {
+                items(list, key = { it.uniqueKey }) {
                     FileCard(item = it, onFileClicked = onFileClicked)
                 }
-        } ?: item {
-            Loading()
-        }
+            }
+        } ?: item { Loading() }
     }
 }
 
-@Composable
-fun Loading() {
-    Box(modifier = Modifier.fillMaxWidth())
-    {
-        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-    }
-}

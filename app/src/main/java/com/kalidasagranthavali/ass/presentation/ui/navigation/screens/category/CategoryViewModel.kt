@@ -1,16 +1,12 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kalidasagranthavali.ass.data.local.LANGUAGE_PREFERENCE
-import com.kalidasagranthavali.ass.data.local.UserDataStore
 import com.kalidasagranthavali.ass.domain.repository.remote.HomeRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.state.BannerState
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.state.CategoryState
-import com.kalidasagranthavali.ass.util.print
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.flow.*
@@ -21,7 +17,7 @@ import javax.inject.Inject
 class CategoryViewModel @Inject constructor(
     private val homeRemoteRepository: HomeRemoteRepository,
     private val application: Application
-) : ViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
+) : ViewModel() {
 
     private val _categoryState = MutableStateFlow(CategoryState())
 
@@ -44,7 +40,6 @@ class CategoryViewModel @Inject constructor(
     )
 
     init {
-        UserDataStore.getInstance(application).register(this@CategoryViewModel)
         viewModelScope.launch(Default) {
             launch {
                 getCategoryData()
@@ -113,16 +108,4 @@ class CategoryViewModel @Inject constructor(
         _categoryQuery.value = newQuery
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        UserDataStore.getInstance(application).unregister(this@CategoryViewModel)
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (LANGUAGE_PREFERENCE == key) {
-            "Current language -> ${
-                UserDataStore.getInstance(application).getLanguageId()
-            }".print("LANGUAGE")
-        }
-    }
 }

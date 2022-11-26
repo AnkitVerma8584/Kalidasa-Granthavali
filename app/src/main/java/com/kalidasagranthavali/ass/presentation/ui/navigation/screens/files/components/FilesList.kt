@@ -20,7 +20,8 @@ fun FilesList(
     searchedContent: List<FilesData>,
     data: List<HomeFiles>,
     query: String,
-    onFileClicked: (homeFiles: HomeFiles, query: String, index: Int) -> Unit
+    onFileClicked: (homeFiles: HomeFiles, query: String, index: Int) -> Unit,
+    onPdfClicked: (homeFiles: HomeFiles) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         searchedContent.forEach { fileData ->
@@ -39,7 +40,7 @@ fun FilesList(
                 })
             }
             item {
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
         stickyHeader {
@@ -64,7 +65,7 @@ fun FilesList(
             }
         else {
             items(data, key = { it.id }) {
-                FileCard(item = it, onFileClicked = onFileClicked)
+                FileCard(item = it, onFileClicked = onFileClicked, onPdfClicked = onPdfClicked)
             }
         }
     }

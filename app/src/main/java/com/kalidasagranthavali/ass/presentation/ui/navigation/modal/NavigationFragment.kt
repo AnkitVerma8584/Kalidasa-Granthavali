@@ -50,5 +50,10 @@ sealed class NavigationFragment(
         title = StringUtil.StringResource(R.string.files_details)
     )
 
+    object Pdf : NavigationFragment(
+        route = "pdf?url={url}",
+        title = StringUtil.StringResource(R.string.files_details)
+    )
+
 }
 

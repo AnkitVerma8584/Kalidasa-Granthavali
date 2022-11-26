@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kalidasagranthavali.ass.presentation.theme.KalidasaGranthavaliTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -42,14 +44,12 @@ fun SearchBar(
     minimumLetter: Int = 0,
 ) {
     val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
+    val focusRequester: FocusRequester = remember { FocusRequester() }
+    val focusManager: FocusManager = LocalFocusManager.current
 
     val trailingIconView = @Composable {
         IconButton(
-            onClick = {
-                onSearchQueryChanged("")
-            },
+            onClick = { onSearchQueryChanged("") },
         ) {
             Icon(
                 Icons.Default.Clear,
@@ -92,10 +92,8 @@ fun SearchBar(
                 )
             },
             trailingIcon = if (query.isNotBlank()) trailingIconView else null,
-            singleLine = true,
-            onValueChange = {
-                onSearchQueryChanged(it)
-            },
+            singleLine = true, maxLines = 1,
+            onValueChange = { onSearchQueryChanged(it) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Search,
@@ -132,7 +130,9 @@ fun SearchBar(
 @Preview(showBackground = true)
 @Composable
 private fun SearchViewPreview() {
-    SearchBar(query = "")
+    KalidasaGranthavaliTheme {
+        SearchBar(query = "")
+    }
 }
 
 

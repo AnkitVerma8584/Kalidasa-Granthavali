@@ -17,7 +17,8 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.comp
 @Composable
 fun FilePage(
     viewModel: FilesViewModel = hiltViewModel(),
-    onFileClicked: (homeFiles: HomeFiles, query: String, index: Int) -> Unit
+    onFileClicked: (homeFiles: HomeFiles, query: String, index: Int) -> Unit,
+    onPdfClicked: (homeFiles: HomeFiles) -> Unit
 ) {
     val files by viewModel.fileState.collectAsState()
     val searchedData by viewModel.fileData.collectAsState()
@@ -35,7 +36,8 @@ fun FilePage(
                 searchedContent = searchedData,
                 data = it,
                 query,
-                onFileClicked = onFileClicked
+                onFileClicked = onFileClicked,
+                onPdfClicked = onPdfClicked
             )
         } ?: CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
     }

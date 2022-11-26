@@ -4,8 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,14 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.kalidasagranthavali.ass.domain.modals.HomeSubCategory
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LazyItemScope.SubCategoryCard(
+fun LazyGridItemScope.SubCategoryCard(
     data: HomeSubCategory,
     onClick: (HomeSubCategory) -> Unit
 ) {
@@ -36,9 +34,7 @@ fun LazyItemScope.SubCategoryCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                modifier = Modifier
-                    .height(100.dp)
-                    .width(100.dp),
+                modifier = Modifier.size(80.dp),
                 contentScale = ContentScale.Crop,
                 painter = rememberAsyncImagePainter(model = data.image),
                 contentDescription = null
@@ -71,17 +67,5 @@ fun LazyItemScope.SubCategoryCard(
             }
         }
 
-    }
-}
-
-@Preview
-@Composable
-fun SubCategoryCardPreview() {
-    LazyColumn {
-        item {
-            SubCategoryCard(
-                data = HomeSubCategory(1, 2, "Beaches", "Some basic description", ""),
-                onClick = {})
-        }
     }
 }

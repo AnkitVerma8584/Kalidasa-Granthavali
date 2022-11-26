@@ -49,35 +49,34 @@ class FileDetailsViewModel @Inject constructor(
     }
 
     private suspend fun fetchFile(homeFileId: Int, homeFileName: String, homeFileUrl: String) {
-
-        filesRepository.getFileData(homeFileId, homeFileName, homeFileUrl).collectLatest { result ->
-            when (result) {
-                is Resource.Cached -> {
-                    _fileState.update {
-                        it.copy(isLoading = false, error = null)
+        filesRepository.getFileData("${homeFileName}_${homeFileId}.txt", homeFileUrl)
+            .collectLatest { result ->
+                when (result) {
+                    is Resource.Cached -> {
+                        _fileState.update {
+                            it.copy(isLoading = false, error = null)
+                        }
+                        readTextFile(result.result)
                     }
-                    readTextFile(result.result)
-                }
-                is Resource.Failure -> {
-                    _fileState.update {
-                        it.copy(isLoading = false, error = it.error)
+                    is Resource.Failure -> {
+                        _fileState.update {
+                            it.copy(isLoading = false, error = result.error)
+                        }
                     }
-                }
-                Resource.Loading -> {
-                    _fileState.update {
-                        it.copy(isLoading = true, error = null)
+                    Resource.Loading -> {
+                        _fileState.update {
+                            it.copy(isLoading = true, error = null)
+                        }
                     }
-                }
-                is Resource.Success -> {
-                    _fileState.update {
-                        it.copy(isLoading = false, error = null)
+                    is Resource.Success -> {
+                        _fileState.update {
+                            it.copy(isLoading = false, error = null)
+                        }
+                        readTextFile(result.result)
                     }
-                    readTextFile(result.result)
                 }
             }
-        }
     }
-
 
     private fun readTextFile(file: File) {
         try {
@@ -117,11 +116,12 @@ class FileDetailsViewModel @Inject constructor(
         }
     }.flowOn(Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
+
     fun updateQuery(newQuery: String = "") {
         _fileDataQuery.value = newQuery
     }
 
-    //   suspend fun getLanguageCode(text: String) = languageTranslator.getLanguageCode(text)
+//   suspend fun getLanguageCode(text: String) = languageTranslator.getLanguageCode(text)
 
     fun getScrollIndex(): Int = index
 

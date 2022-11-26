@@ -1,6 +1,5 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.components
 
-import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,37 +11,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kalidasagranthavali.ass.R
-import com.kalidasagranthavali.ass.data.remote.Api.getDocumentUrl
 import com.kalidasagranthavali.ass.domain.modals.HomeFiles
-import com.rajat.pdfviewer.PdfViewerActivity
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyItemScope.FileCard(
     item: HomeFiles,
     onFileClicked: (homeFiles: HomeFiles, query: String, index: Int) -> Unit,
-    context: Context = LocalContext.current
+    onPdfClicked: (homeFiles: HomeFiles) -> Unit
 ) {
     ElevatedCard(modifier = Modifier
-        .padding(horizontal = 12.dp, vertical = 8.dp)
+        .padding(8.dp)
         .animateItemPlacement()
         .fillMaxWidth()
         .clickable {
             if (item.isNotPdf)
                 onFileClicked(item, "", -1)
-            else
-                context.startActivity(
-                    PdfViewerActivity.launchPdfFromUrl(
-                        context, item.file_url.getDocumentUrl(),
-                        item.name, "", enableDownload = false
-                    )
-                )
+            else onPdfClicked(item)
         }) {
         Row(
             modifier = Modifier

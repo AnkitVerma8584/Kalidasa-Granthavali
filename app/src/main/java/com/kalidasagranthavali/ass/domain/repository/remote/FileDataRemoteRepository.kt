@@ -7,7 +7,6 @@ import java.io.File
 interface FileDataRemoteRepository {
 
     fun getFileData(
-        homeFileId: Int,
         homeFileName: String,
         homeFileUrl: String
     ): Flow<Resource<File>>

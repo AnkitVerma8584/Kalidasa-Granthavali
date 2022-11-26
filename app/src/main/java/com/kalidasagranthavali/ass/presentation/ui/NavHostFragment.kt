@@ -18,6 +18,7 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.C
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.contact.ContactPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.file_details.FileDetailsPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.files.FilePage
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.pdf.PdfScreen
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_category.SubCategoryPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_sub_category.SubToSubCategoryPage
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.support.SupportPage
@@ -83,6 +84,12 @@ fun NavHostFragments(
                     launchSingleTop = true
                     restoreState = true
                 }
+            }, onPdfClicked = {
+                NavigationFragment.Pdf.title = StringUtil.DynamicText(it.name)
+                navController.navigate("pdf?url=${it.file_url}") {
+                    launchSingleTop = true
+                    restoreState = true
+                }
             })
         }
         composable(
@@ -94,6 +101,12 @@ fun NavHostFragments(
             FilePage(onFileClicked = { item, query, index ->
                 NavigationFragment.FileDetails.title = StringUtil.DynamicText(item.name)
                 navController.navigate("file_details?file_id=$id&file_name=${item.name}&file_url=${item.file_url}&query=$query&index=$index") {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }, onPdfClicked = {
+                NavigationFragment.Pdf.title = StringUtil.DynamicText(it.name)
+                navController.navigate("pdf?url=${it.file_url}") {
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -112,6 +125,12 @@ fun NavHostFragments(
                 })
         ) {
             FileDetailsPage()
+        }
+        composable(
+            route = NavigationFragment.Pdf.route,
+            arguments = listOf(navArgument("url") { type = NavType.StringType })
+        ) {
+            PdfScreen()
         }
     }
 }

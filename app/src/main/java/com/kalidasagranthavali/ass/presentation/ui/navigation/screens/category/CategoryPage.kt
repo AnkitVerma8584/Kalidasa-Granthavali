@@ -1,19 +1,22 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kalidasagranthavali.ass.R
 import com.kalidasagranthavali.ass.domain.modals.HomeCategory
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.components.CategoryList
+import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.common.Loading
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.common.SearchBar
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -33,9 +36,7 @@ fun CategoryPage(
             onSearchQueryChanged = viewModel::queryChanged
         )
         if (categories.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            Loading()
         }
         CategoryList(
             category = categories.data,
@@ -43,7 +44,16 @@ fun CategoryPage(
             onClick = onClick
         )
         categories.error?.let {
-            Text(text = it.asString())
+            Text(
+                text = it.asString(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.errorContainer)
+                    .padding(5.dp),
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
         }
     }
 }

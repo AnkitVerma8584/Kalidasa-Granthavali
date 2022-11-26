@@ -2,15 +2,16 @@ package com.kalidasagranthavali.ass.util.locale
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.kalidasagranthavali.ass.MyApplication
 import java.util.*
 
 private const val SELECTED_LANGUAGE = "Locale.Helper.Selected.Language"
 const val LANGUAGE_PREFERENCE = "com.kalidasagranthavali.ass.Kalidasa.Granthavali"
 
-class LocalePreferences(context: Context) {
+class LocalePreferences() {
 
     private val preferences: SharedPreferences =
-        context.getSharedPreferences(LANGUAGE_PREFERENCE, Context.MODE_PRIVATE)
+        MyApplication.appContext.getSharedPreferences(LANGUAGE_PREFERENCE, Context.MODE_PRIVATE)
     private val editor = preferences.edit()
 
     internal fun saveLanguage(languageId: String) {

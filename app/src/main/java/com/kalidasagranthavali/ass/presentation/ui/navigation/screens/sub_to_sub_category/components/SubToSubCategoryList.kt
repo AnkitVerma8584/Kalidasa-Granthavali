@@ -5,11 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,7 +26,8 @@ fun SubToSubCategoryContent(
     subToSubCategory: List<HomeSubToSubCategory>?,
     onSubToSubCategoryClick: (HomeSubToSubCategory) -> Unit,
     files: List<HomeFiles>?,
-    onFileClicked: (HomeFiles, String, Int) -> Unit
+    onFileClicked: (HomeFiles, String, Int) -> Unit,
+    onPdfClicked: (homeFiles: HomeFiles) -> Unit
 ) {
     LazyColumn {
         searchedContent.forEach { fileData ->
@@ -70,7 +69,7 @@ fun SubToSubCategoryContent(
                     )
                 }
                 items(list, key = { it.uniqueKey }) {
-                    FileCard(item = it, onFileClicked = onFileClicked)
+                    FileCard(item = it, onFileClicked = onFileClicked, onPdfClicked = onPdfClicked)
                 }
             }
         } ?: item { Loading() }

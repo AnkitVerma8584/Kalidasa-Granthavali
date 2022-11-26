@@ -7,17 +7,17 @@ import java.util.*
 class LocaleModule {
 
     internal fun onAttach(context: Context): Context {
-        val lang = getLanguage(context)
+        val lang = getLanguage()
         return setLocale(context, lang)
     }
 
     internal fun setLocale(context: Context, language: String): Context {
-        UserDataStore.getInstance(context).saveLanguage(language)
+        UserDataStore.getInstance().saveLanguage(language)
         return updateResources(context, language)
     }
 
-    internal fun getLanguage(context: Context): String {
-        return UserDataStore.getInstance(context).getLanguageId()
+    internal fun getLanguage(): String {
+        return UserDataStore.getInstance().getLanguageId()
     }
 
     private fun updateResources(context: Context, language: String): Context {

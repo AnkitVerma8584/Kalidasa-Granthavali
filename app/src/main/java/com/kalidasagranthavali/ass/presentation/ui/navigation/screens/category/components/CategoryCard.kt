@@ -34,9 +34,7 @@ fun LazyItemScope.CategoryItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                modifier = Modifier
-                    .height(100.dp)
-                    .width(100.dp),
+                modifier = Modifier.size(80.dp),
                 contentScale = ContentScale.Crop,
                 painter = rememberAsyncImagePainter(model = data.image),
                 contentDescription = null

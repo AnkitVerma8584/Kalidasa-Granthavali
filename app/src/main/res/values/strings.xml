@@ -40,7 +40,7 @@
     <!--Contact and support-->
     <string name="sub_heading">In case of any difficulty or queries please contact us on the details below :</string>
     <string name="name">Sri Vyasatirtha Samshodhana Pratishthana (R.)</string>
-  <!--  <string name="email">somerandommail@gmail.com</string>-->
+    <string name="email">somerandommail@gmail.com</string>
     <string name="phone">+91 9448394312</string>
     <string name="address">No.1226, 3rd Main, 2nd Cross Road, Krishnamurthy Puram, Mysore - 570004</string>
 

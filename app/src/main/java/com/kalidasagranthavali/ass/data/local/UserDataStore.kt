@@ -2,10 +2,11 @@ package com.kalidasagranthavali.ass.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.kalidasagranthavali.ass.MyApplication
 import java.util.*
 
-private const val SELECTED_LANGUAGE = "Locale.Helper.Selected.Language"
-const val LANGUAGE_PREFERENCE = "com.kalidasagranthavali.ass.Kalidasa.Granthavali"
+const val SELECTED_LANGUAGE = "Locale.Helper.Selected.Language"
+private const val LANGUAGE_PREFERENCE = "com.kalidasagranthavali.ass.Kalidasa.Granthavali"
 
 class UserDataStore(context: Context) {
 
@@ -14,7 +15,7 @@ class UserDataStore(context: Context) {
     private val editor = preferences.edit()
 
     companion object {
-        fun getInstance(context: Context) = UserDataStore(context)
+        fun getInstance() = UserDataStore(MyApplication.appContext)
     }
 
     internal fun saveLanguage(languageId: String) {

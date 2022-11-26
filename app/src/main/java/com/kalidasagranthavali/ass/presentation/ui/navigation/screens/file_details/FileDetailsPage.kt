@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -73,32 +74,34 @@ private fun BoxScope.DocumentContent(
     if (text.isEmpty())
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     else {
-        LazyColumn(
-            contentPadding = PaddingValues(16.dp),
-            state = listState,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            if (query.length > 2) {
-                item {
-                    Text(
-                        text = "Found ${searchedText.size} results.",
-                        modifier = Modifier.padding(8.dp),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
-                if (searchedText.isNotEmpty()) {
-                    items(searchedText) { content ->
-                        SearchedText(query = query, content = content, onClick = {
-                            coroutineScope.launch {
-                                listState.animateScrollToItem(searchedText.size + it)
-                            }
-                        })
+        SelectionContainer {
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                state = listState,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (query.length > 2) {
+                    item {
+                        Text(
+                            text = "Found ${searchedText.size} results.",
+                            modifier = Modifier.padding(8.dp),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                    if (searchedText.isNotEmpty()) {
+                        items(searchedText) { content ->
+                            SearchedText(query = query, content = content, onClick = {
+                                coroutineScope.launch {
+                                    listState.animateScrollToItem(searchedText.size + it)
+                                }
+                            })
+                        }
                     }
                 }
-            }
-            items(text) { item ->
-                DocumentText(query = query, text = item, scale = scale)
+                items(text) { item ->
+                    DocumentText(query = query, text = item, scale = scale)
+                }
             }
         }
 

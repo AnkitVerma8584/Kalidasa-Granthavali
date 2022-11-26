@@ -69,7 +69,8 @@ private fun MainPage(
         NavigationFragment.SubCategory,
         NavigationFragment.Files,
         NavigationFragment.SubToSubCategory,
-        NavigationFragment.FileDetails
+        NavigationFragment.FileDetails,
+        NavigationFragment.Pdf
     ), menuScreens: List<NavigationFragment> = listOf(
         NavigationFragment.Home,
         NavigationFragment.About,

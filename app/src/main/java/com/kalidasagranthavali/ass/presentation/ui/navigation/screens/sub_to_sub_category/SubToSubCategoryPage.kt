@@ -17,7 +17,8 @@ import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.sub_to_sub
 fun SubToSubCategoryPage(
     viewModel: SubToSubCategoryViewModel = hiltViewModel(),
     onSubToSubCategoryClick: (HomeSubToSubCategory) -> Unit,
-    onFileClicked: (HomeFiles, String, Int) -> Unit
+    onFileClicked: (HomeFiles, String, Int) -> Unit,
+    onPdfClicked: (homeFiles: HomeFiles) -> Unit
 ) {
     val subToSubCategories by viewModel.subToSubCategoryState.collectAsState()
     val files by viewModel.fileState.collectAsState()
@@ -37,7 +38,8 @@ fun SubToSubCategoryPage(
             subToSubCategories.data,
             onSubToSubCategoryClick,
             files.data,
-            onFileClicked
+            onFileClicked,
+            onPdfClicked
         )
     }
 }

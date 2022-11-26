@@ -1,12 +1,16 @@
 package com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category
 
-import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kalidasagranthavali.ass.data.local.SELECTED_LANGUAGE
+import com.kalidasagranthavali.ass.data.local.UserDataStore
 import com.kalidasagranthavali.ass.domain.repository.remote.HomeRemoteRepository
 import com.kalidasagranthavali.ass.domain.utils.Resource
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.state.BannerState
 import com.kalidasagranthavali.ass.presentation.ui.navigation.screens.category.state.CategoryState
+import com.kalidasagranthavali.ass.util.locale.LocaleHelper
+import com.kalidasagranthavali.ass.util.print
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.flow.*
@@ -15,9 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val homeRemoteRepository: HomeRemoteRepository,
-    private val application: Application
-) : ViewModel() {
+    private val homeRemoteRepository: HomeRemoteRepository
+) : ViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val _categoryState = MutableStateFlow(CategoryState())
 
@@ -48,6 +51,7 @@ class CategoryViewModel @Inject constructor(
                 getBannerData()
             }
         }
+        UserDataStore.getInstance().register(this)
     }
 
     private suspend fun getCategoryData() {
@@ -106,6 +110,17 @@ class CategoryViewModel @Inject constructor(
 
     fun queryChanged(newQuery: String = "") {
         _categoryQuery.value = newQuery
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (SELECTED_LANGUAGE == key) {
+            LocaleHelper.getLanguage().print()
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        UserDataStore.getInstance().unregister(this)
     }
 
 }
